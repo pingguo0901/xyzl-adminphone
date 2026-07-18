@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "export ANDROID_HOME=/opt/android-sdk && cd composeApp && ../gradlew :composeApp:assembleDebug",
-  "outputDirectory": "../xyzl-adminphone.apk",
+  "buildCommand": "",
+  "outputDirectory": ".",
   "framework": null,
-  "installCommand": "cp composeApp/build/outputs/apk/debug/composeApp-debug.apk xyzl-adminphone.apk 2>/dev/null; ls -la xyzl-adminphone.apk 2>/dev/null || echo 'APK built successfully'"
+  "installCommand": ""
 }
