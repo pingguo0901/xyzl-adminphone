@@ -6,3 +6,8 @@ local.properties
 .idea/
 *.iml
 .DS_Store
+.vercel
+.env*
+
+# 旧页面本地备份（git 历史已有原件）
+.backup_old_screens_20261010/

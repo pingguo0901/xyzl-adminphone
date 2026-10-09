@@ -19,17 +19,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stellarelite.admin.ui.theme.AdminColors
 
-// ─── Bottom Nav Bar ───
+// ─── 五大页面导航 ───
 
 enum class AdminTab(val label: String, val emoji: String) {
-    Profiles("用户档案", "👥"),
-    Staff("职员架构", "🛡️"),
-    Orders("工单系统", "📋"),
-    DutyRoster("排班监控", "⏰"),
-    CustomTrips("行程矩阵", "🗺️"),
-    Chat("通讯审计", "💬"),
-    Storage("云端存储", "📁"),
-    Finance("财务管理", "💰")
+    Home("首页", "🏠"),
+    Chat("聊天", "💬"),
+    Gps("GPS", "📍"),
+    Trips("行程", "🗺️"),
+    Me("我", "👤")
 }
 
 @Composable
@@ -42,26 +39,27 @@ fun AdminBottomNavBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(AdminColors.NavBar)
-            .padding(top = 4.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 4.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                .clip(RoundedCornerShape(26.dp))
+                .background(AdminColors.Card)
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             tabs.forEach { tab ->
                 val isSelected = currentTab == tab
                 Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(if (isSelected) AdminColors.PrimaryBg else AdminColors.Card)
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(if (isSelected) AdminColors.PrimaryBg else Color.Transparent)
                         .clickable { onTabSelected(tab) }
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(tab.emoji, fontSize = 16.sp)
+                    Text(tab.emoji, fontSize = 18.sp)
                     Text(
                         tab.label,
                         color = if (isSelected) AdminColors.Primary else AdminColors.TextMuted,
@@ -75,7 +73,72 @@ fun AdminBottomNavBar(
     }
 }
 
-// ─── Common Components ───
+// ─── 页面标题（顶部居中） ───
+
+@Composable
+fun PageTitle(title: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 14.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(title, color = AdminColors.TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Black)
+    }
+}
+
+// ─── 胶囊式筛选栏 ───
+
+@Composable
+fun FilterChipBar(
+    options: List<String>,
+    selected: String,
+    onSelect: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        options.forEach { opt ->
+            val isSelected = selected == opt
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(if (isSelected) AdminColors.Primary else AdminColors.SurfaceVariant)
+                    .clickable { onSelect(opt) }
+                    .padding(horizontal = 16.dp, vertical = 7.dp)
+            ) {
+                Text(
+                    opt,
+                    color = if (isSelected) Color.White else AdminColors.TextMuted,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
+
+// ─── 通用卡片容器 ───
+
+@Composable
+fun GlassCard(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(AdminColors.Card)
+            .padding(16.dp),
+        content = content
+    )
+}
+
+// ─── 通用组件 ───
 
 @Composable
 fun SectionTitle(title: String) {
@@ -146,43 +209,3 @@ fun ActionButton(
         Text(label, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
     }
 }
-
-@Composable
-fun FilterChip(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    color: Color = AdminColors.Primary
-) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(if (selected) color else AdminColors.SurfaceVariant)
-            .clickable { onClick() }
-            .padding(horizontal = 14.dp, vertical = 7.dp)
-    ) {
-        Text(label, color = if (selected) Color.White else AdminColors.TextMuted, fontSize = 12.sp, fontWeight = FontWeight.Medium)
-    }
-}
-
-@Composable
-fun SearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    placeholder: String = "搜索..."
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(AdminColors.Surface)
-            .padding(horizontal = 14.dp, vertical = 10.dp)
-    ) {
-        if (query.isEmpty()) {
-            Text(placeholder, color = AdminColors.TextDisabled, fontSize = 13.sp)
-        }
-        // In a real implementation, use TextField
-    }
-}
-
-

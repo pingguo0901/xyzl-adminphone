@@ -1,0 +1,7 @@
+{
+  "versionCode": 2,
+  "versionName": "1.0.1",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.1/xyzl-adminphone.apk",
+  "changelog": "- 🏠 五大页面重构：首页 / 聊天 / GPS / 行程 / 我\n- 💬 聊天页胶囊筛选（私聊/收单/丢单/交通）\n- 🗺️ 行程页胶囊筛选（全部/已完成/未完成/已取消）\n- 🔄 更新系统对齐 GitHub Releases",
+  "buildDate": "2026-10-10"
+}
