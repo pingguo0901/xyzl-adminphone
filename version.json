@@ -1,7 +1,7 @@
 {
-  "versionCode": 6,
-  "versionName": "1.0.5",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.5/xyzl-adminphone.apk",
-  "changelog": "- 🔐 新增登录注册入口（邮箱/密码登录、注册、忘记密码）",
+  "versionCode": 7,
+  "versionName": "1.0.6",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.6/xyzl-adminphone.apk",
+  "changelog": "- 🎨 登录页全新 UI（深蓝渐变 + 金色按钮）",
   "buildDate": "2026-10-10"
 }
