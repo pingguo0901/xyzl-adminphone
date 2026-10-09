@@ -6,11 +6,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Assessment
+import androidx.compose.material.icons.outlined.LocalShipping
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,21 +39,21 @@ fun HomeScreen() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             GlassCard(modifier = Modifier.fillMaxWidth()) {
-                CardHeader("📡", "轮询消息")
+                CardHeader(Icons.Outlined.Refresh, "轮询消息")
                 Spacer(modifier = Modifier.height(10.dp))
                 Text("订单 A-2026 有新回复", color = AdminColors.TextPrimary, fontSize = 13.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("2 分钟前", color = AdminColors.TextMuted, fontSize = 11.sp)
             }
             GlassCard(modifier = Modifier.fillMaxWidth()) {
-                CardHeader("🔔", "重要通知")
+                CardHeader(Icons.Outlined.Notifications, "重要通知")
                 Spacer(modifier = Modifier.height(10.dp))
                 NoticeRow("司机张师傅 已完成接单", "10:24")
                 NoticeRow("新订单待派车：SG → JB", "10:02")
                 NoticeRow("明日排班已更新", "昨天")
             }
             GlassCard(modifier = Modifier.fillMaxWidth()) {
-                CardHeader("📊", "今日摘要")
+                CardHeader(Icons.Outlined.Assessment, "今日摘要")
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     SummaryItem("今日订单", "12", Modifier.weight(1f))
@@ -58,9 +67,9 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun CardHeader(emoji: String, title: String) {
+private fun CardHeader(icon: ImageVector, title: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(emoji, fontSize = 18.sp)
+        Icon(icon, contentDescription = title, tint = AdminColors.Primary, modifier = Modifier.size(18.dp))
         Spacer(modifier = Modifier.width(8.dp))
         Text(title, color = AdminColors.Primary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
@@ -109,15 +118,15 @@ private fun QuickActionsBar() {
             .padding(8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        QuickAction("收单", "📋")
-        QuickAction("派单", "🚗")
-        QuickAction("查单", "🔍")
-        QuickAction("通知", "🔔")
+        QuickAction(Icons.AutoMirrored.Outlined.ReceiptLong, "收单")
+        QuickAction(Icons.Outlined.LocalShipping, "派单")
+        QuickAction(Icons.Outlined.Search, "查单")
+        QuickAction(Icons.Outlined.Notifications, "通知")
     }
 }
 
 @Composable
-private fun QuickAction(label: String, emoji: String) {
+private fun QuickAction(icon: ImageVector, label: String) {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
@@ -125,7 +134,8 @@ private fun QuickAction(label: String, emoji: String) {
             .padding(horizontal = 12.dp, vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(emoji, fontSize = 20.sp)
+        Icon(icon, contentDescription = label, tint = AdminColors.TextPrimary, modifier = Modifier.size(22.dp))
+        Spacer(modifier = Modifier.height(3.dp))
         Text(label, color = AdminColors.TextSecondary, fontSize = 10.sp)
     }
 }

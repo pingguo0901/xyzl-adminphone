@@ -5,11 +5,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.LocalShipping
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,7 +24,7 @@ import com.stellarelite.admin.ui.components.FilterChipBar
 import com.stellarelite.admin.ui.components.PageTitle
 import com.stellarelite.admin.ui.theme.AdminColors
 
-private data class ChatItem(val emoji: String, val name: String, val lastMsg: String, val time: String)
+private data class ChatItem(val icon: ImageVector, val name: String, val lastMsg: String, val time: String)
 
 @Composable
 fun ChatScreen() {
@@ -32,18 +39,18 @@ fun ChatScreen() {
         )
         val chats = when (filter) {
             "私聊" -> listOf(
-                ChatItem("👤", "张师傅", "收到，马上出发", "10:24"),
-                ChatItem("👤", "李管家", "行程已确认", "09:58"),
-                ChatItem("👤", "王客服", "客户已付款", "09:30")
+                ChatItem(Icons.Outlined.Person, "张师傅", "收到，马上出发", "10:24"),
+                ChatItem(Icons.Outlined.Person, "李管家", "行程已确认", "09:58"),
+                ChatItem(Icons.Outlined.Person, "王客服", "客户已付款", "09:30")
             )
             "收单" -> listOf(
-                ChatItem("📋", "新订单", "SG → JB 新订单待接", "10:02")
+                ChatItem(Icons.AutoMirrored.Outlined.ReceiptLong, "新订单", "SG → JB 新订单待接", "10:02")
             )
             "丢单" -> listOf(
-                ChatItem("⚠️", "丢单提醒", "订单 A-2025 超时未处理", "09:15")
+                ChatItem(Icons.Outlined.Warning, "丢单提醒", "订单 A-2025 超时未处理", "09:15")
             )
             else -> listOf(
-                ChatItem("🚗", "交通信息", "关卡拥堵，预计延误 20 分钟", "08:40")
+                ChatItem(Icons.Outlined.LocalShipping, "交通信息", "关卡拥堵，预计延误 20 分钟", "08:40")
             )
         }
         LazyColumn(
@@ -75,7 +82,7 @@ private fun ChatRow(item: ChatItem) {
                 .background(AdminColors.SurfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            Text(item.emoji, fontSize = 18.sp)
+            Icon(item.icon, contentDescription = null, tint = AdminColors.TextPrimary, modifier = Modifier.size(20.dp))
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {

@@ -1,7 +1,7 @@
 {
-  "versionCode": 3,
-  "versionName": "1.0.2",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.2/xyzl-adminphone.apk",
-  "changelog": "- 🎨 更换 APP 图标",
+  "versionCode": 4,
+  "versionName": "1.0.3",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.3/xyzl-adminphone.apk",
+  "changelog": "- 🎨 APP 内全部 Emoji 替换为图标（Material Icons）",
   "buildDate": "2026-10-10"
 }

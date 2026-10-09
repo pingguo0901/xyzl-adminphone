@@ -6,12 +6,20 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,12 +29,12 @@ import com.stellarelite.admin.ui.theme.AdminColors
 
 // ─── 五大页面导航 ───
 
-enum class AdminTab(val label: String, val emoji: String) {
-    Home("首页", "🏠"),
-    Chat("聊天", "💬"),
-    Gps("GPS", "📍"),
-    Trips("行程", "🗺️"),
-    Me("我", "👤")
+enum class AdminTab(val label: String, val icon: ImageVector) {
+    Home("首页", Icons.Outlined.Home),
+    Chat("聊天", Icons.AutoMirrored.Outlined.Chat),
+    Gps("GPS", Icons.Outlined.LocationOn),
+    Trips("行程", Icons.Outlined.Map),
+    Me("我", Icons.Outlined.Person)
 }
 
 @Composable
@@ -59,7 +67,13 @@ fun AdminBottomNavBar(
                         .padding(horizontal = 14.dp, vertical = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(tab.emoji, fontSize = 18.sp)
+                    Icon(
+                        tab.icon,
+                        contentDescription = tab.label,
+                        tint = if (isSelected) AdminColors.Primary else AdminColors.TextMuted,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         tab.label,
                         color = if (isSelected) AdminColors.Primary else AdminColors.TextMuted,

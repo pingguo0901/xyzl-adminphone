@@ -5,11 +5,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,7 +44,7 @@ fun MeScreen() {
                     .background(AdminColors.SurfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                Text("👤", fontSize = 34.sp)
+                Icon(Icons.Outlined.Person, contentDescription = null, tint = AdminColors.TextPrimary, modifier = Modifier.size(36.dp))
             }
             Spacer(modifier = Modifier.height(10.dp))
             Text("管理员", color = AdminColors.TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Black)
@@ -46,22 +54,22 @@ fun MeScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             GlassCard(modifier = Modifier.fillMaxWidth()) {
-                MenuRow("⚙️", "账号设置")
-                MenuRow("🔔", "消息通知")
-                MenuRow("ℹ️", "关于")
-                MenuRow("🚪", "退出登录")
+                MenuRow(Icons.Outlined.Settings, "账号设置")
+                MenuRow(Icons.Outlined.Notifications, "消息通知")
+                MenuRow(Icons.Outlined.Info, "关于")
+                MenuRow(Icons.AutoMirrored.Outlined.Logout, "退出登录")
             }
         }
     }
 }
 
 @Composable
-private fun MenuRow(emoji: String, label: String) {
+private fun MenuRow(icon: ImageVector, label: String) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(emoji, fontSize = 18.sp)
+        Icon(icon, contentDescription = label, tint = AdminColors.TextPrimary, modifier = Modifier.size(20.dp))
         Spacer(modifier = Modifier.width(12.dp))
         Text(label, color = AdminColors.TextPrimary, fontSize = 13.sp, modifier = Modifier.weight(1f))
         Text("›", color = AdminColors.TextMuted, fontSize = 18.sp)
