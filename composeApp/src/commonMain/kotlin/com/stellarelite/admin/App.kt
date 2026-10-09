@@ -16,9 +16,15 @@ import com.stellarelite.admin.ui.components.AdminTab
 import com.stellarelite.admin.ui.screens.ChatScreen
 import com.stellarelite.admin.ui.screens.GpsScreen
 import com.stellarelite.admin.ui.screens.HomeScreen
+import com.stellarelite.admin.ui.screens.LoginScreen
 import com.stellarelite.admin.ui.screens.MeScreen
+import com.stellarelite.admin.ui.screens.RegisterScreen
 import com.stellarelite.admin.ui.screens.TripsScreen
 import com.stellarelite.admin.ui.theme.AdminColors
+
+enum class AppView {
+    Login, Register, Dashboard
+}
 
 @Composable
 fun App(
@@ -27,6 +33,7 @@ fun App(
 ) {
     var showUpdateDialog by remember { mutableStateOf(false) }
     var updateInfo by remember { mutableStateOf<VersionInfo?>(null) }
+    var currentView by remember { mutableStateOf(AppView.Login) }
     var currentTab by remember { mutableStateOf(AdminTab.Home) }
 
     LaunchedEffect(Unit) {
@@ -41,26 +48,43 @@ fun App(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AdminColors.Background)
-            .statusBarsPadding()
-    ) {
-        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            when (currentTab) {
-                AdminTab.Home -> HomeScreen()
-                AdminTab.Chat -> ChatScreen()
-                AdminTab.Gps -> GpsScreen()
-                AdminTab.Trips -> TripsScreen()
-                AdminTab.Me -> MeScreen()
+    when (currentView) {
+        AppView.Login -> {
+            LoginScreen(
+                onLogin = { _, _ -> currentView = AppView.Dashboard },
+                onGoRegister = { currentView = AppView.Register },
+                onForgotPassword = { /* TODO: 忘记密码流程 */ }
+            )
+        }
+        AppView.Register -> {
+            RegisterScreen(
+                onRegister = { _, _, _ -> currentView = AppView.Login },
+                onBack = { currentView = AppView.Login }
+            )
+        }
+        AppView.Dashboard -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(AdminColors.Background)
+                    .statusBarsPadding()
+            ) {
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    when (currentTab) {
+                        AdminTab.Home -> HomeScreen()
+                        AdminTab.Chat -> ChatScreen()
+                        AdminTab.Gps -> GpsScreen()
+                        AdminTab.Trips -> TripsScreen()
+                        AdminTab.Me -> MeScreen()
+                    }
+                }
+                AdminBottomNavBar(
+                    tabs = AdminTab.entries.toList(),
+                    currentTab = currentTab,
+                    onTabSelected = { currentTab = it }
+                )
             }
         }
-        AdminBottomNavBar(
-            tabs = AdminTab.entries.toList(),
-            currentTab = currentTab,
-            onTabSelected = { currentTab = it }
-        )
     }
 
     if (showUpdateDialog && updateInfo != null) {

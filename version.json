@@ -1,7 +1,7 @@
 {
-  "versionCode": 5,
-  "versionName": "1.0.4",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.4/xyzl-adminphone.apk",
-  "changelog": "- 🖼️ 修复桌面 APP 图标未生效（补充 mipmap 多尺寸图标 + manifest 声明）",
+  "versionCode": 6,
+  "versionName": "1.0.5",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.5/xyzl-adminphone.apk",
+  "changelog": "- 🔐 新增登录注册入口（邮箱/密码登录、注册、忘记密码）",
   "buildDate": "2026-10-10"
 }
