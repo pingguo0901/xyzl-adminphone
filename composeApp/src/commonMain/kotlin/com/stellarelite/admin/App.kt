@@ -16,9 +16,9 @@ import com.stellarelite.admin.ui.components.AdminTab
 import com.stellarelite.admin.ui.screens.ChatScreen
 import com.stellarelite.admin.ui.screens.GpsScreen
 import com.stellarelite.admin.ui.screens.HomeScreen
-import com.stellarelite.admin.ui.screens.LoginScreen
 import com.stellarelite.admin.ui.screens.MeScreen
 import com.stellarelite.admin.ui.screens.RegisterScreen
+import com.stellarelite.admin.ui.screens.XingYuLoginScreen
 import com.stellarelite.admin.ui.screens.TripsScreen
 import com.stellarelite.admin.ui.theme.AdminColors
 
@@ -50,10 +50,14 @@ fun App(
 
     when (currentView) {
         AppView.Login -> {
-            LoginScreen(
+            XingYuLoginScreen(
                 onLogin = { _, _ -> currentView = AppView.Dashboard },
-                onGoRegister = { currentView = AppView.Register },
-                onForgotPassword = { /* TODO: 忘记密码流程 */ }
+                onRegister = { currentView = AppView.Register },
+                onForgetPassword = { /* TODO: 忘记密码流程 */ },
+                onWechatLogin = { /* TODO: 微信登录 */ },
+                onAppleLogin = { /* TODO: Apple 登录 */ },
+                onUserAgreementClick = { /* TODO: 用户协议 */ },
+                onPrivacyPolicyClick = { /* TODO: 隐私政策 */ }
             )
         }
         AppView.Register -> {
