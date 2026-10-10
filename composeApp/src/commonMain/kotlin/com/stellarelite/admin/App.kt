@@ -14,6 +14,7 @@ import com.stellarelite.admin.model.VersionInfo
 import com.stellarelite.admin.ui.components.AdminBottomNavBar
 import com.stellarelite.admin.ui.components.AdminTab
 import com.stellarelite.admin.ui.screens.ChatScreen
+import com.stellarelite.admin.ui.screens.EntryScreen
 import com.stellarelite.admin.ui.screens.GpsScreen
 import com.stellarelite.admin.ui.screens.HomeScreen
 import com.stellarelite.admin.ui.screens.MeScreen
@@ -23,7 +24,7 @@ import com.stellarelite.admin.ui.screens.TripsScreen
 import com.stellarelite.admin.ui.theme.AdminColors
 
 enum class AppView {
-    Login, Register, Dashboard
+    Entry, Login, Register, Dashboard
 }
 
 @Composable
@@ -33,7 +34,7 @@ fun App(
 ) {
     var showUpdateDialog by remember { mutableStateOf(false) }
     var updateInfo by remember { mutableStateOf<VersionInfo?>(null) }
-    var currentView by remember { mutableStateOf(AppView.Login) }
+    var currentView by remember { mutableStateOf(AppView.Entry) }
     var currentTab by remember { mutableStateOf(AdminTab.Home) }
 
     LaunchedEffect(Unit) {
@@ -49,6 +50,12 @@ fun App(
     }
 
     when (currentView) {
+        AppView.Entry -> {
+            EntryScreen(
+                onLogin = { currentView = AppView.Login },
+                onRegister = { currentView = AppView.Register }
+            )
+        }
         AppView.Login -> {
             XingYuLoginScreen(
                 onLogin = { _, _ -> currentView = AppView.Dashboard },
@@ -63,7 +70,7 @@ fun App(
         AppView.Register -> {
             RegisterScreen(
                 onRegister = { _, _, _ -> currentView = AppView.Login },
-                onBack = { currentView = AppView.Login }
+                onBack = { currentView = AppView.Entry }
             )
         }
         AppView.Dashboard -> {
