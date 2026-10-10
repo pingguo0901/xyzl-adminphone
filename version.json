@@ -1,7 +1,8 @@
 {
-  "versionCode": 11,
-  "versionName": "1.0.10",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.10/xyzl-adminphone.apk",
-  "changelog": "- 🔔 首页/聊天/行程/GPS 右上角新增铃铛按钮，点击进入通知页（胶囊筛选 + 消息列表）",
+  "versionCode": 12,
+  "versionName": "1.0.11",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.11/xyzl-adminphone.apk",
+  "changelog": "- ➕ 行程页底部快捷栏右上角新增圆形+按钮
+- 新增新建订单页面（中介/客户信息、多起点目的地、备注、收钱/司机/车辆确认）",
   "buildDate": "2026-10-10"
 }

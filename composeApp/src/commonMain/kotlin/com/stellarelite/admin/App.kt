@@ -18,6 +18,7 @@ import com.stellarelite.admin.ui.screens.EntryScreen
 import com.stellarelite.admin.ui.screens.GpsScreen
 import com.stellarelite.admin.ui.screens.HomeScreen
 import com.stellarelite.admin.ui.screens.MeScreen
+import com.stellarelite.admin.ui.screens.NewOrderScreen
 import com.stellarelite.admin.ui.screens.NotificationScreen
 import com.stellarelite.admin.ui.screens.RegisterScreen
 import com.stellarelite.admin.ui.screens.XingYuLoginScreen
@@ -38,6 +39,7 @@ fun App(
     var currentView by remember { mutableStateOf(AppView.Entry) }
     var currentTab by remember { mutableStateOf(AdminTab.Home) }
     var showNotifications by remember { mutableStateOf(false) }
+    var showNewOrder by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         onCheckUpdate?.let { checkFn ->
@@ -85,6 +87,15 @@ fun App(
                 ) {
                     NotificationScreen(onBack = { showNotifications = false })
                 }
+            } else if (showNewOrder) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                        .statusBarsPadding()
+                ) {
+                    NewOrderScreen(onBack = { showNewOrder = false })
+                }
             } else {
                 Column(
                     modifier = Modifier
@@ -97,7 +108,7 @@ fun App(
                             AdminTab.Home -> HomeScreen(onBellClick = { showNotifications = true })
                             AdminTab.Chat -> ChatScreen(onBellClick = { showNotifications = true })
                             AdminTab.Gps -> GpsScreen(onBellClick = { showNotifications = true })
-                            AdminTab.Trips -> TripsScreen(onBellClick = { showNotifications = true })
+                            AdminTab.Trips -> TripsScreen(onBellClick = { showNotifications = true }, onAddOrder = { showNewOrder = true })
                             AdminTab.Me -> MeScreen()
                         }
                     }

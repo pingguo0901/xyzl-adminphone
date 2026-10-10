@@ -1,15 +1,21 @@
 package com.stellarelite.admin.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,7 +27,7 @@ import com.stellarelite.admin.ui.theme.AdminColors
 private data class TripItem(val orderNo: String, val passenger: String, val route: String, val status: String)
 
 @Composable
-fun TripsScreen(onBellClick: () -> Unit = {}) {
+fun TripsScreen(onBellClick: () -> Unit = {}, onAddOrder: () -> Unit = {}) {
     var filter by remember { mutableStateOf("全部") }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -49,6 +55,7 @@ fun TripsScreen(onBellClick: () -> Unit = {}) {
                 TripRow(trip)
             }
         }
+        TripsQuickBar(onAddOrder = onAddOrder)
     }
 }
 
@@ -70,5 +77,37 @@ private fun TripRow(item: TripItem) {
             Text(item.route, color = AdminColors.TextMuted, fontSize = 11.sp)
         }
         StatusBadge(item.status)
+    }
+}
+
+@Composable
+private fun TripsQuickBar(onAddOrder: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(AdminColors.Card)
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // 快捷操作占位
+        Text(
+            "快捷操作",
+            color = AdminColors.TextMuted,
+            fontSize = 11.sp,
+            modifier = Modifier.weight(1f)
+        )
+        // 右上角圆形 + 按钮
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(AdminColors.Primary)
+                .clickable { onAddOrder() },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Filled.Add, contentDescription = "新建订单", tint = Color.White, modifier = Modifier.size(20.dp))
+        }
     }
 }
