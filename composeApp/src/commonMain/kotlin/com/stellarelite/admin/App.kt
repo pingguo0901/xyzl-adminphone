@@ -18,6 +18,7 @@ import com.stellarelite.admin.ui.screens.EntryScreen
 import com.stellarelite.admin.ui.screens.GpsScreen
 import com.stellarelite.admin.ui.screens.HomeScreen
 import com.stellarelite.admin.ui.screens.MeScreen
+import com.stellarelite.admin.ui.screens.NotificationScreen
 import com.stellarelite.admin.ui.screens.RegisterScreen
 import com.stellarelite.admin.ui.screens.XingYuLoginScreen
 import com.stellarelite.admin.ui.screens.TripsScreen
@@ -36,6 +37,7 @@ fun App(
     var updateInfo by remember { mutableStateOf<VersionInfo?>(null) }
     var currentView by remember { mutableStateOf(AppView.Entry) }
     var currentTab by remember { mutableStateOf(AdminTab.Home) }
+    var showNotifications by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         onCheckUpdate?.let { checkFn ->
@@ -74,26 +76,37 @@ fun App(
             )
         }
         AppView.Dashboard -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(AdminColors.Background)
-                    .statusBarsPadding()
-            ) {
-                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                    when (currentTab) {
-                        AdminTab.Home -> HomeScreen()
-                        AdminTab.Chat -> ChatScreen()
-                        AdminTab.Gps -> GpsScreen()
-                        AdminTab.Trips -> TripsScreen()
-                        AdminTab.Me -> MeScreen()
-                    }
+            if (showNotifications) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                        .statusBarsPadding()
+                ) {
+                    NotificationScreen(onBack = { showNotifications = false })
                 }
-                AdminBottomNavBar(
-                    tabs = AdminTab.entries.toList(),
-                    currentTab = currentTab,
-                    onTabSelected = { currentTab = it }
-                )
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                        .statusBarsPadding()
+                ) {
+                    Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        when (currentTab) {
+                            AdminTab.Home -> HomeScreen(onBellClick = { showNotifications = true })
+                            AdminTab.Chat -> ChatScreen(onBellClick = { showNotifications = true })
+                            AdminTab.Gps -> GpsScreen(onBellClick = { showNotifications = true })
+                            AdminTab.Trips -> TripsScreen(onBellClick = { showNotifications = true })
+                            AdminTab.Me -> MeScreen()
+                        }
+                    }
+                    AdminBottomNavBar(
+                        tabs = AdminTab.entries.toList(),
+                        currentTab = currentTab,
+                        onTabSelected = { currentTab = it }
+                    )
+                }
             }
         }
     }

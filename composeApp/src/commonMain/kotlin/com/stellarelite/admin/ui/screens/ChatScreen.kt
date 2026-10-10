@@ -27,11 +27,11 @@ import com.stellarelite.admin.ui.theme.AdminColors
 private data class ChatItem(val icon: ImageVector, val name: String, val lastMsg: String, val time: String)
 
 @Composable
-fun ChatScreen() {
+fun ChatScreen(onBellClick: () -> Unit = {}) {
     var filter by remember { mutableStateOf("私聊") }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        PageTitle("聊天")
+        PageTitle("聊天", onBellClick = onBellClick)
         FilterChipBar(
             options = listOf("私聊", "收单", "丢单", "交通"),
             selected = filter,

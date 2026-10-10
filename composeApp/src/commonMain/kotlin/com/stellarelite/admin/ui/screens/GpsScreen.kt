@@ -8,9 +8,9 @@ import com.stellarelite.admin.ui.components.EmptyView
 import com.stellarelite.admin.ui.components.PageTitle
 
 @Composable
-fun GpsScreen() {
+fun GpsScreen(onBellClick: () -> Unit = {}) {
     Column(modifier = Modifier.fillMaxSize()) {
-        PageTitle("GPS")
+        PageTitle("GPS", onBellClick = onBellClick)
         EmptyView("GPS 功能开发中，敬请期待")
     }
 }

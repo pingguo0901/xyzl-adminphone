@@ -1,7 +1,7 @@
 {
-  "versionCode": 10,
-  "versionName": "1.0.9",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.9/xyzl-adminphone.apk",
-  "changelog": "- 🎨 入口页按钮复刻司机端（金色渐变登录 + 半透明注册 + 字距）",
+  "versionCode": 11,
+  "versionName": "1.0.10",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.10/xyzl-adminphone.apk",
+  "changelog": "- 🔔 首页/聊天/行程/GPS 右上角新增铃铛按钮，点击进入通知页（胶囊筛选 + 消息列表）",
   "buildDate": "2026-10-10"
 }

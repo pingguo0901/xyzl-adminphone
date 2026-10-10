@@ -21,11 +21,11 @@ import com.stellarelite.admin.ui.theme.AdminColors
 private data class TripItem(val orderNo: String, val passenger: String, val route: String, val status: String)
 
 @Composable
-fun TripsScreen() {
+fun TripsScreen(onBellClick: () -> Unit = {}) {
     var filter by remember { mutableStateOf("全部") }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        PageTitle("行程")
+        PageTitle("行程", onBellClick = onBellClick)
         FilterChipBar(
             options = listOf("全部", "已完成", "未完成", "已取消"),
             selected = filter,

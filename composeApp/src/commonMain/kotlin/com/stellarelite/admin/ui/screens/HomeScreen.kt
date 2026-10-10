@@ -28,9 +28,9 @@ import com.stellarelite.admin.ui.components.PageTitle
 import com.stellarelite.admin.ui.theme.AdminColors
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onBellClick: () -> Unit = {}) {
     Column(modifier = Modifier.fillMaxSize()) {
-        PageTitle("首页")
+        PageTitle("首页", onBellClick = onBellClick)
         Column(
             modifier = Modifier
                 .weight(1f)

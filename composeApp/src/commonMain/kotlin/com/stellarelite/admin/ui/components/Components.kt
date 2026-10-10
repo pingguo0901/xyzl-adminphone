@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -90,7 +91,7 @@ fun AdminBottomNavBar(
 // ─── 页面标题（顶部居中） ───
 
 @Composable
-fun PageTitle(title: String) {
+fun PageTitle(title: String, onBellClick: (() -> Unit)? = null) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,6 +99,26 @@ fun PageTitle(title: String) {
         contentAlignment = Alignment.Center
     ) {
         Text(title, color = AdminColors.TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Black)
+        if (onBellClick != null) {
+            // 右上角铃铛按钮
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 16.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(AdminColors.SurfaceVariant)
+                    .clickable { onBellClick() }
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Outlined.Notifications,
+                    contentDescription = "通知",
+                    tint = AdminColors.TextPrimary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
     }
 }
 
