@@ -52,8 +52,8 @@ fun App(
     when (currentView) {
         AppView.Entry -> {
             EntryScreen(
-                onLogin = { currentView = AppView.Login },
-                onRegister = { currentView = AppView.Register }
+                onLoginClick = { currentView = AppView.Login },
+                onRegisterClick = { currentView = AppView.Register }
             )
         }
         AppView.Login -> {
