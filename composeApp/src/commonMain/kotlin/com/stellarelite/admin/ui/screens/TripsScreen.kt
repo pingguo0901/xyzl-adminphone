@@ -55,7 +55,7 @@ fun TripsScreen(onBellClick: () -> Unit = {}, onAddOrder: () -> Unit = {}) {
                 TripRow(trip)
             }
         }
-        TripsQuickBar(onAddOrder = onAddOrder)
+        TripsAddButton(onAddOrder = onAddOrder)
     }
 }
 
@@ -81,33 +81,22 @@ private fun TripRow(item: TripItem) {
 }
 
 @Composable
-private fun TripsQuickBar(onAddOrder: () -> Unit) {
-    Row(
+private fun TripsAddButton(onAddOrder: () -> Unit) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(AdminColors.Card)
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        contentAlignment = Alignment.CenterEnd
     ) {
-        // 快捷操作占位
-        Text(
-            "快捷操作",
-            color = AdminColors.TextMuted,
-            fontSize = 11.sp,
-            modifier = Modifier.weight(1f)
-        )
-        // 右上角圆形 + 按钮
         Box(
             modifier = Modifier
-                .size(36.dp)
+                .size(48.dp)
                 .clip(CircleShape)
                 .background(AdminColors.Primary)
                 .clickable { onAddOrder() },
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Filled.Add, contentDescription = "新建订单", tint = Color.White, modifier = Modifier.size(20.dp))
+            Icon(Icons.Filled.Add, contentDescription = "新建订单", tint = Color.White, modifier = Modifier.size(26.dp))
         }
     }
 }

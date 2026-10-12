@@ -1,8 +1,7 @@
 {
-  "versionCode": 12,
-  "versionName": "1.0.11",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.11/xyzl-adminphone.apk",
-  "changelog": "- ➕ 行程页底部快捷栏右上角新增圆形+按钮
-- 新增新建订单页面（中介/客户信息、多起点目的地、备注、收钱/司机/车辆确认）",
-  "buildDate": "2026-10-10"
+  "versionCode": 14,
+  "versionName": "1.0.13",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.13/xyzl-adminphone.apk",
+  "changelog": "- 🎨 我的页面重构（个人卡片：头像+公司+名称+Admin职位+二维码按钮；分类菜单：我的信息/账号管理/邀请码/支付与收款/通用/平台政策与协议/帮助与关于；退出登录按钮）",
+  "buildDate": "2026-10-12"
 }
