@@ -1,7 +1,8 @@
 {
-  "versionCode": 14,
-  "versionName": "1.0.13",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.13/xyzl-adminphone.apk",
-  "changelog": "- 🎨 我的页面重构（个人卡片：头像+公司+名称+Admin职位+二维码按钮；分类菜单：我的信息/账号管理/邀请码/支付与收款/通用/平台政策与协议/帮助与关于；退出登录按钮）",
-  "buildDate": "2026-10-12"
+  "versionCode": 15,
+  "versionName": "1.0.14",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.14/xyzl-adminphone.apk",
+  "changelog": "- 📝 注册页完整版（邀请码/企业类型胶囊/企业信息/营业地址/持有人居住地/联系方式/企业认证SSM上传/KYC身份证+驾照上传/输入校验+邀请码员工模式）",
+  "buildDate": "2026-10-14"
 }
+

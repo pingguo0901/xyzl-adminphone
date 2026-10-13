@@ -73,7 +73,7 @@ fun App(
         }
         AppView.Register -> {
             RegisterScreen(
-                onRegister = { _, _, _ -> currentView = AppView.Login },
+                onRegister = { currentView = AppView.Login },
                 onBack = { currentView = AppView.Entry }
             )
         }
