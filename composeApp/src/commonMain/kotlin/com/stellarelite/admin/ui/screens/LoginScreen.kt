@@ -1,15 +1,14 @@
 package com.stellarelite.admin.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -18,208 +17,185 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.stellarelite.admin.ui.components.AppleButton
+import com.stellarelite.admin.ui.components.WeChatButton
+import com.stellarelite.admin.ui.theme.AdminColors
 
-// =====================  星域臻旅 登录页面 KMP 完整代码  =====================
+// =====================  星域臻旅 后台端 登录页面（复刻司机端）  =====================
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun XingYuLoginScreen(
-    onLogin: (phoneOrEmail: String, password: String) -> Unit,
-    onRegister: () -> Unit,
-    onForgetPassword: () -> Unit,
-    onWechatLogin: () -> Unit,
-    onAppleLogin: () -> Unit,
-    onUserAgreementClick: () -> Unit,
-    onPrivacyPolicyClick: () -> Unit
+fun LoginScreen(
+    onBack: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {},
+    onRegister: () -> Unit = {},
+    onForgetPassword: () -> Unit = {},
+    onWechatLogin: () -> Unit = {},
+    onAppleLogin: () -> Unit = {},
+    onOpenPolicy: (Int) -> Unit = {},
 ) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
     var accountText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var agreedPolicy by remember { mutableStateOf(false) }
 
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFF081226),
-            Color(0xFF0F2040),
-            Color(0xFF102244)
-        )
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = backgroundBrush)
+            .background(AdminColors.Background),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .statusBarsPadding()
                 .padding(horizontal = 28.dp, vertical = 40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // ==========  顶部品牌  ==========
+            Spacer(Modifier.height(24.dp))
             Text(
                 text = "星域臻旅",
                 fontSize = 44.sp,
-                color = Color(0xFFD4AF37),
-                style = MaterialTheme.typography.headlineLarge
+                color = AdminColors.TextPrimary,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 6.sp,
             )
+            Spacer(Modifier.height(10.dp))
             Text(
                 text = "— 尊荣邀制 · 至尊之旅 —",
-                fontSize = 18.sp,
-                color = Color(0xFFE2C260),
-                modifier = Modifier.padding(bottom = 36.dp)
+                fontSize = 15.sp,
+                color = AdminColors.TextMuted,
+                letterSpacing = 2.sp,
+                modifier = Modifier.padding(bottom = 36.dp),
             )
 
+            // ==========  登录卡片  ==========
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(26.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0x22345688)
-                ),
-                border = BorderStroke(
-                    1.dp,
-                    Color(0xFF4A72BB)
-                )
+                colors = CardDefaults.cardColors(containerColor = Color(0x1A3B82F6)),
+                border = BorderStroke(1.dp, AdminColors.SurfaceVariant),
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(26.dp)
+                        .padding(26.dp),
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        TabItem(
-                            title = "登录",
-                            selected = selectedTabIndex == 0,
-                            modifier = Modifier.weight(1f),
-                            onClick = { selectedTabIndex = 0 }
-                        )
-                        TabItem(
-                            title = "注册",
-                            selected = selectedTabIndex == 1,
-                            modifier = Modifier.weight(1f),
-                            onClick = { selectedTabIndex = 1 }
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "登录",
+                            fontSize = 24.sp,
+                            color = AdminColors.TextPrimary,
+                            fontWeight = FontWeight.Bold,
                         )
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // 手机号 / 邮箱
                     OutlinedTextField(
                         value = accountText,
                         onValueChange = { accountText = it },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("请输入手机号 / 邮箱", color = Color(0xFFAAAAAA)) },
+                        placeholder = { Text("请输入手机号 / 邮箱", color = AdminColors.TextMuted) },
                         leadingIcon = {
-                            Icon(Icons.Filled.Person, null, tint = Color(0xFFC8C8C8))
+                            Icon(Icons.Filled.Person, null, tint = AdminColors.TextMuted)
                         },
                         shape = RoundedCornerShape(18.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFD6B442),
-                            unfocusedBorderColor = Color(0xFF5478AA),
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AdminColors.Primary,
+                            unfocusedBorderColor = AdminColors.SurfaceVariant,
+                            focusedTextColor = AdminColors.TextPrimary,
+                            unfocusedTextColor = AdminColors.TextPrimary,
                         ),
-                        singleLine = true
+                        singleLine = true,
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    // 密码
                     OutlinedTextField(
                         value = passwordText,
                         onValueChange = { passwordText = it },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("请输入密码", color = Color(0xFFAAAAAA)) },
+                        placeholder = { Text("请输入密码", color = AdminColors.TextMuted) },
                         leadingIcon = {
-                            Icon(Icons.Filled.Lock, null, tint = Color(0xFFC8C8C8))
+                            Icon(Icons.Filled.Lock, null, tint = AdminColors.TextMuted)
                         },
                         trailingIcon = {
                             val icon = if (passwordVisible) Icons.Filled.Visibility
                             else Icons.Filled.VisibilityOff
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(icon, "切换密码可见", tint = Color(0xFFCCCCCC))
+                                Icon(icon, "切换密码可见", tint = AdminColors.TextMuted)
                             }
                         },
                         shape = RoundedCornerShape(18.dp),
                         visualTransformation = if (passwordVisible) VisualTransformation.None
                         else PasswordVisualTransformation(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFD6B442),
-                            unfocusedBorderColor = Color(0xFF5478AA),
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            focusedBorderColor = AdminColors.Primary,
+                            unfocusedBorderColor = AdminColors.SurfaceVariant,
+                            focusedTextColor = AdminColors.TextPrimary,
+                            unfocusedTextColor = AdminColors.TextPrimary,
                         ),
-                        singleLine = true
+                        singleLine = true,
                     )
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 6.dp),
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         Text(
                             text = "忘记密码？",
-                            color = Color(0xFFE6C765),
-                            modifier = Modifier.clickable { onForgetPassword() }
+                            color = AdminColors.Primary,
+                            fontSize = 13.sp,
+                            modifier = Modifier.clickable { onForgetPassword() },
                         )
                     }
 
                     Spacer(modifier = Modifier.height(28.dp))
 
                     Button(
-                        onClick = {
-                            if (selectedTabIndex == 0) {
-                                onLogin(accountText, passwordText)
-                            } else {
-                                onRegister()
-                            }
-                        },
+                        onClick = { onLoginSuccess() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
                         shape = RoundedCornerShape(999.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFD8B645)
-                        ),
-                        enabled = agreedPolicy
+                        colors = ButtonDefaults.buttonColors(containerColor = AdminColors.Primary),
+                        enabled = agreedPolicy,
                     ) {
-                        Text(
-                            if (selectedTabIndex == 0) "登录" else "注册",
-                            fontSize = 20.sp,
-                            color = Color(0xFF1A1A1A)
-                        )
+                        Text("登录", fontSize = 20.sp, color = Color(0xFFFFFFFF), fontWeight = FontWeight.Bold)
                     }
 
                     Spacer(modifier = Modifier.height(26.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    // 分割线 + 其他登录方式
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .height(1.dp)
-                                .background(Color(0xFF496899))
+                                .background(AdminColors.Card),
                         )
                         Text(
                             "其他登录方式",
-                            color = Color(0xFFB0C4E2),
-                            modifier = Modifier.padding(horizontal = 12.dp)
+                            color = AdminColors.TextMuted,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(horizontal = 12.dp),
                         )
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .height(1.dp)
-                                .background(Color(0xFF496899))
+                                .background(AdminColors.Card),
                         )
                     }
 
@@ -227,94 +203,78 @@ fun XingYuLoginScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(64.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFF07C160))
-                                .clickable { onWechatLogin() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("微信", color = Color.White, fontSize = 13.sp)
-                        }
+                        WeChatButton(onClick = { onWechatLogin() }, size = 64.dp, logoSize = 34.dp)
                         Spacer(modifier = Modifier.width(36.dp))
-                        Box(
-                            modifier = Modifier
-                                .size(64.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFF111111))
-                                .clickable { onAppleLogin() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Apple", color = Color.White, fontSize = 12.sp)
-                        }
+                        AppleButton(onClick = { onAppleLogin() }, size = 64.dp, logoSize = 34.dp)
                     }
 
-                    Spacer(modifier = Modifier.height(26.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("没有帐号？", color = AdminColors.TextMuted, fontSize = 13.sp)
+                        Text(
+                            "注册",
+                            color = AdminColors.Primary,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.clickable { onRegister() },
+                        )
+                    }
+
+                    Spacer(Modifier.height(18.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
                             checked = agreedPolicy,
                             onCheckedChange = { agreedPolicy = it },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = Color(0xFFD6B442)
-                            )
+                                checkedColor = AdminColors.Primary,
+                                uncheckedColor = AdminColors.TextMuted,
+                                checkmarkColor = Color(0xFFFFFFFF),
+                            ),
                         )
-                        Text(
-                            "我已阅读并同意 ",
-                            color = Color(0xFFDDE6F7)
-                        )
-                        Text(
-                            "《用户协议》",
-                            color = Color(0xFFE6C765),
-                            modifier = Modifier.clickable { onUserAgreementClick() }
-                        )
-                        Text(
-                            " 与 ",
-                            color = Color(0xFFDDE6F7)
-                        )
-                        Text(
-                            "《隐私政策》",
-                            color = Color(0xFFE6C765),
-                            modifier = Modifier.clickable { onPrivacyPolicyClick() }
-                        )
+                        FlowRow(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text("我已阅读并同意", color = AdminColors.TextPrimary, fontSize = 12.sp)
+                            AdminPolicyLink("《用户服务协议》") { onOpenPolicy(0) }
+                            Text("与", color = AdminColors.TextPrimary, fontSize = 12.sp)
+                            AdminPolicyLink("《隐私政策》") { onOpenPolicy(1) }
+                        }
                     }
                 }
             }
+
+            Spacer(Modifier.height(40.dp))
+        }
+
+        // 左上角返回
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .statusBarsPadding()
+                .padding(top = 4.dp, start = 8.dp),
+        ) {
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "返回",
+                tint = AdminColors.TextPrimary,
+            )
         }
     }
 }
 
 @Composable
-private fun TabItem(
-    title: String,
-    selected: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = modifier
-            .clickable { onClick() }
-            .padding(vertical = 6.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = title,
-            fontSize = 24.sp,
-            color = if (selected) Color.White else Color(0xFF889CC0)
-        )
-        Spacer(modifier = Modifier.height(6.dp))
-        if (selected) {
-            Box(
-                modifier = Modifier
-                    .width(44.dp)
-                    .height(3.dp)
-                    .background(Color(0xFFD8B645))
-            )
-        }
-    }
+internal fun AdminPolicyLink(text: String, onClick: () -> Unit) {
+    Text(
+        text = text,
+        color = AdminColors.Primary,
+        fontSize = 12.sp,
+        modifier = Modifier.clickable { onClick() },
+    )
 }

@@ -1,8 +1,7 @@
 {
-  "versionCode": 15,
-  "versionName": "1.0.14",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.14/xyzl-adminphone.apk",
-  "changelog": "- 📝 注册页完整版（邀请码/企业类型胶囊/企业信息/营业地址/持有人居住地/联系方式/企业认证SSM上传/KYC身份证+驾照上传/输入校验+邀请码员工模式）",
+  "versionCode": 16,
+  "versionName": "1.0.15",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.15/xyzl-adminphone.apk",
+  "changelog": "- 📐 全站顶部状态栏安全区（入口/登录/注册/我的等页面不再压在状态栏下）\n- 🎨 登录页复刻司机端（品牌标题 + 登录卡片 + 微信/Apple 圆形按钮 + 协议勾选）\n- 👤 我的页复刻司机端（头像卡 + 二维码按钮 + 分组菜单卡片 + 底部退出登录）",
   "buildDate": "2026-10-14"
 }
-

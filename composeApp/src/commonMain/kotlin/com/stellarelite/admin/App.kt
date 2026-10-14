@@ -21,7 +21,7 @@ import com.stellarelite.admin.ui.screens.MeScreen
 import com.stellarelite.admin.ui.screens.NewOrderScreen
 import com.stellarelite.admin.ui.screens.NotificationScreen
 import com.stellarelite.admin.ui.screens.RegisterScreen
-import com.stellarelite.admin.ui.screens.XingYuLoginScreen
+import com.stellarelite.admin.ui.screens.LoginScreen
 import com.stellarelite.admin.ui.screens.TripsScreen
 import com.stellarelite.admin.ui.theme.AdminColors
 
@@ -61,14 +61,14 @@ fun App(
             )
         }
         AppView.Login -> {
-            XingYuLoginScreen(
-                onLogin = { _, _ -> currentView = AppView.Dashboard },
+            LoginScreen(
+                onBack = { currentView = AppView.Entry },
+                onLoginSuccess = { currentView = AppView.Dashboard },
                 onRegister = { currentView = AppView.Register },
                 onForgetPassword = { /* TODO: 忘记密码流程 */ },
                 onWechatLogin = { /* TODO: 微信登录 */ },
                 onAppleLogin = { /* TODO: Apple 登录 */ },
-                onUserAgreementClick = { /* TODO: 用户协议 */ },
-                onPrivacyPolicyClick = { /* TODO: 隐私政策 */ }
+                onOpenPolicy = { /* TODO: 协议与政策页 */ }
             )
         }
         AppView.Register -> {
@@ -109,7 +109,7 @@ fun App(
                             AdminTab.Chat -> ChatScreen(onBellClick = { showNotifications = true })
                             AdminTab.Gps -> GpsScreen(onBellClick = { showNotifications = true })
                             AdminTab.Trips -> TripsScreen(onBellClick = { showNotifications = true }, onAddOrder = { showNewOrder = true })
-                            AdminTab.Me -> MeScreen()
+                            AdminTab.Me -> MeScreen(onBellClick = { showNotifications = true })
                         }
                     }
                     AdminBottomNavBar(

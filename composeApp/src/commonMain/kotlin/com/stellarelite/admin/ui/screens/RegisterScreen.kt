@@ -120,6 +120,7 @@ fun RegisterScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(AdminColors.Background)
+            .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp)
     ) {
