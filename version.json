@@ -1,7 +1,7 @@
 {
-  "versionCode": 20,
-  "versionName": "1.0.19",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.19/xyzl-adminphone.apk",
-  "changelog": "- 🔤 政策与协议页正文字色修正：正文改为主文字色（司机端同款 ink），不再用灰色 muted —— 深浅色下都与司机端一致\n- 🧭 二级页标题栏复刻司机端（左上角返回改胶囊底 40dp + 居中 22sp SemiBold 标题）\n- 🏷 分组标题/说明文字/主按钮对齐司机端（17sp SemiBold ink 分组标题、54dp 主按钮 17sp SemiBold）",
+  "versionCode": 21,
+  "versionName": "1.0.20",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.20/xyzl-adminphone.apk",
+  "changelog": "- 🖥 界面与显示页补齐司机端同款四项：深色/浅色模式 · 字体大小 · 多语言 · 翻译（翻译为 X）\n- ➕ 新增子页：字体大小（聊天预览 + 7 档滑块，左上角取消/右上角完成）、多语言（列表选中打勾）、翻译（将文字翻译为 + 自动翻译开关）、将文字翻译为\n- 🧩 设置类行/卡片样式对齐司机端（表单分组内边距、分割线通栏、值行 15sp ink / 14sp muted）",
   "buildDate": "2026-10-15"
 }

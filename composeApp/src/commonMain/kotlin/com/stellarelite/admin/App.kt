@@ -21,10 +21,12 @@ import com.stellarelite.admin.ui.screens.ChatSettingsScreen
 import com.stellarelite.admin.ui.screens.DataRetentionPolicyScreen
 import com.stellarelite.admin.ui.screens.DarkModeScreen
 import com.stellarelite.admin.ui.screens.DisplayScreen
+import com.stellarelite.admin.ui.screens.FontSizeScreen
 import com.stellarelite.admin.ui.screens.DisclaimerScreen
 import com.stellarelite.admin.ui.screens.EulaScreen
 import com.stellarelite.admin.ui.screens.FinalComplianceScreen
 import com.stellarelite.admin.ui.screens.KycPolicyScreen
+import com.stellarelite.admin.ui.screens.LanguageScreen
 import com.stellarelite.admin.ui.screens.MyReviewsScreen
 import com.stellarelite.admin.ui.screens.NotificationSettingsScreen
 import com.stellarelite.admin.ui.screens.PrivacyPolicyScreen
@@ -38,6 +40,8 @@ import com.stellarelite.admin.ui.screens.NewOrderScreen
 import com.stellarelite.admin.ui.screens.NotificationScreen
 import com.stellarelite.admin.ui.screens.RegisterScreen
 import com.stellarelite.admin.ui.screens.LoginScreen
+import com.stellarelite.admin.ui.screens.TranslateToScreen
+import com.stellarelite.admin.ui.screens.TranslationScreen
 import com.stellarelite.admin.ui.screens.TripsScreen
 import com.stellarelite.admin.ui.theme.AdminColors
 import kotlinx.coroutines.launch
@@ -64,6 +68,10 @@ fun App(
     var showNotifSettings by remember { mutableStateOf(false) }
     var showDisplay by remember { mutableStateOf(false) }
     var showDarkMode by remember { mutableStateOf(false) }
+    var showFontSize by remember { mutableStateOf(false) }
+    var showLanguage by remember { mutableStateOf(false) }
+    var showTranslation by remember { mutableStateOf(false) }
+    var showTranslateTo by remember { mutableStateOf(false) }
     var showChatSettings by remember { mutableStateOf(false) }
     var showChatRecords by remember { mutableStateOf(false) }
     var showMyReviews by remember { mutableStateOf(false) }
@@ -170,7 +178,13 @@ fun App(
                         .fillMaxSize()
                         .background(AdminColors.Background)
                 ) {
-                    DisplayScreen(onBack = { showDisplay = false }, onOpenDarkMode = { showDarkMode = true })
+                    DisplayScreen(
+                        onBack = { showDisplay = false },
+                        onOpenDarkMode = { showDarkMode = true },
+                        onOpenFontSize = { showFontSize = true },
+                        onOpenLanguage = { showLanguage = true },
+                        onOpenTranslation = { showTranslation = true },
+                    )
                 }
             } else if (showDarkMode) {
                 Column(
@@ -179,6 +193,38 @@ fun App(
                         .background(AdminColors.Background)
                 ) {
                     DarkModeScreen(onBack = { showDarkMode = false })
+                }
+            } else if (showFontSize) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    FontSizeScreen(onBack = { showFontSize = false })
+                }
+            } else if (showLanguage) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    LanguageScreen(onBack = { showLanguage = false })
+                }
+            } else if (showTranslation) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    TranslationScreen(onBack = { showTranslation = false }, onOpenTranslateTo = { showTranslateTo = true })
+                }
+            } else if (showTranslateTo) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    TranslateToScreen(onBack = { showTranslateTo = false })
                 }
             } else if (showChatSettings) {
                 Column(

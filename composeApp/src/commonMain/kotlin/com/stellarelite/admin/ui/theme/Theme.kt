@@ -22,6 +22,9 @@ object DisplayPrefs {
     var followSystem by mutableStateOf(true)
     var darkMode by mutableStateOf(true)
     var fontSizeLevel by mutableStateOf(4)
+    var language by mutableStateOf("中文")
+    var translateTo by mutableStateOf("中文")
+    var autoTranslateChat by mutableStateOf(false)
 
     val modeLabel: String
         get() = if (followSystem) "跟随系统" else if (darkMode) "深色" else "浅色"

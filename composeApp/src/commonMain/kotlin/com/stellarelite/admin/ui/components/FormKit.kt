@@ -13,8 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -37,7 +40,8 @@ fun FormGroup(content: @Composable ColumnScope.() -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .background(AdminColors.Card),
+            .background(AdminColors.Card)
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         content = content,
     )
 }
@@ -47,10 +51,72 @@ fun FormDivider() {
     Box(
         Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp)
             .height(1.dp)
             .background(AdminColors.SurfaceVariant),
     )
+}
+
+/** 语言/单选列表行：右侧蓝色打勾 */
+@Composable
+fun FormCheckRow(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(label, fontSize = 15.sp, color = AdminColors.TextPrimary, modifier = Modifier.weight(1f))
+        if (selected) {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = "已选择",
+                tint = AdminColors.Primary,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+    }
+}
+
+/** 左上角圆形取消 + 居中标题 + 右上角圆形完成（复刻司机端） */
+@Composable
+fun FormPageHeaderCancelDone(
+    title: String,
+    onCancel: () -> Unit,
+    onDone: () -> Unit,
+) {
+    Box(Modifier.fillMaxWidth().height(44.dp)) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(AdminColors.SurfaceVariant)
+                .clickable { onCancel() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(Icons.Filled.Close, "取消", tint = AdminColors.TextPrimary, modifier = Modifier.size(20.dp))
+        }
+        Text(
+            text = title,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AdminColors.TextPrimary,
+            modifier = Modifier.align(Alignment.Center),
+        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color(0xFF22C55E))
+                .clickable { onDone() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(Icons.Filled.Check, "完成", tint = Color.White, modifier = Modifier.size(20.dp))
+        }
+    }
 }
 
 @Composable
@@ -64,12 +130,12 @@ fun FormValueRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(label, fontSize = 15.sp, color = AdminColors.TextPrimary, modifier = Modifier.weight(1f))
         if (value.isNotEmpty()) {
-            Text(value, fontSize = 13.sp, color = AdminColors.TextMuted)
+            Text(value, fontSize = 14.sp, color = AdminColors.TextMuted)
             Spacer(Modifier.width(6.dp))
         }
         Icon(
@@ -90,7 +156,7 @@ fun FormSwitchRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(label, fontSize = 15.sp, color = AdminColors.TextPrimary, modifier = Modifier.weight(1f))
