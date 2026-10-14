@@ -12,6 +12,7 @@ class MainActivity : ComponentActivity() {
         UpdateManager.setCurrentVersion(packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt())
         setContent {
             App(
+                appVersionName = packageManager.getPackageInfo(packageName, 0).versionName ?: "",
                 onCheckUpdate = { UpdateManager.checkForUpdate() },
                 onRequestUpdate = { info ->
                     UpdateManager.downloadAndInstall(this, info.apkUrl)

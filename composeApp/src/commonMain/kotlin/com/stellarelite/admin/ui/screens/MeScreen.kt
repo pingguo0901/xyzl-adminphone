@@ -52,8 +52,29 @@ private val meSections: List<Pair<String, List<String>>> = listOf(
 
 /** 我的页：头像卡（右侧二维码按钮）+ 分组菜单 + 退出登录（复刻司机端我的页） */
 @Composable
-fun MeScreen(onBellClick: () -> Unit = {}) {
+fun MeScreen(
+    onBellClick: () -> Unit = {},
+    onOpenAboutUs: () -> Unit = {},
+    onOpenAbout: () -> Unit = {},
+    onOpenPolicy: (Int) -> Unit = {},
+) {
     var showLogoutDialog by remember { mutableStateOf(false) }
+
+    val onItemClick: (String) -> Unit = { label ->
+        when (label) {
+            "用户服务协议" -> onOpenPolicy(0)
+            "隐私政策" -> onOpenPolicy(1)
+            "KYC实名认证合规条款" -> onOpenPolicy(2)
+            "退款与交易合规政策" -> onOpenPolicy(3)
+            "数据留存与审计合规政策" -> onOpenPolicy(4)
+            "免责声明" -> onOpenPolicy(5)
+            "合规最终说明" -> onOpenPolicy(6)
+            "终端用户软件许可协议" -> onOpenPolicy(7)
+            "关于我们" -> onOpenAboutUs()
+            "关于平台" -> onOpenAbout()
+            else -> { }
+        }
+    }
 
     if (showLogoutDialog) {
         AlertDialog(
@@ -156,7 +177,7 @@ fun MeScreen(onBellClick: () -> Unit = {}) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { }
+                                    .clickable { onItemClick(label) }
                                     .padding(horizontal = 20.dp, vertical = 16.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
