@@ -21,6 +21,7 @@ import com.stellarelite.admin.ui.screens.ChatSettingsScreen
 import com.stellarelite.admin.ui.screens.DataRetentionPolicyScreen
 import com.stellarelite.admin.ui.screens.DarkModeScreen
 import com.stellarelite.admin.ui.screens.DisplayScreen
+import com.stellarelite.admin.ui.screens.DutyScreen
 import com.stellarelite.admin.ui.screens.FontSizeScreen
 import com.stellarelite.admin.ui.screens.DisclaimerScreen
 import com.stellarelite.admin.ui.screens.EulaScreen
@@ -43,6 +44,7 @@ import com.stellarelite.admin.ui.screens.LoginScreen
 import com.stellarelite.admin.ui.screens.TranslateToScreen
 import com.stellarelite.admin.ui.screens.TranslationScreen
 import com.stellarelite.admin.ui.screens.TripsScreen
+import com.stellarelite.admin.ui.screens.VersionUpdateScreen
 import com.stellarelite.admin.ui.theme.AdminColors
 import kotlinx.coroutines.launch
 
@@ -75,6 +77,8 @@ fun App(
     var showChatSettings by remember { mutableStateOf(false) }
     var showChatRecords by remember { mutableStateOf(false) }
     var showMyReviews by remember { mutableStateOf(false) }
+    var showDuty by remember { mutableStateOf(false) }
+    var showVersionUpdate by remember { mutableStateOf(false) }
     var policyIndex by remember { mutableStateOf<Int?>(null) }
     val scope = rememberCoroutineScope()
 
@@ -149,17 +153,7 @@ fun App(
                 ) {
                     AboutScreen(
                         versionName = appVersionName,
-                        onOpenVersionUpdate = {
-                            scope.launch {
-                                val info = onCheckUpdate?.invoke()
-                                if (info != null) {
-                                    updateInfo = info
-                                    showUpdateDialog = true
-                                } else {
-                                    showLatestDialog = true
-                                }
-                            }
-                        },
+                        onOpenVersionUpdate = { showAbout = false; showVersionUpdate = true },
                         onOpenEula = { showAbout = false; policyIndex = 7 },
                         onBack = { showAbout = false }
                     )
@@ -242,6 +236,27 @@ fun App(
                 ) {
                     ChatRecordsScreen(onBack = { showChatRecords = false })
                 }
+            } else if (showDuty) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    DutyScreen(onBack = { showDuty = false })
+                }
+            } else if (showVersionUpdate) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    VersionUpdateScreen(
+                        currentVersion = appVersionName,
+                        onCheckUpdate = onCheckUpdate,
+                        onApplyUpdate = { info -> onRequestUpdate?.invoke(info) },
+                        onBack = { showVersionUpdate = false }
+                    )
+                }
             } else if (showMyReviews) {
                 Column(
                     modifier = Modifier
@@ -280,7 +295,8 @@ fun App(
                                 onOpenDisplay = { showDisplay = true },
                                 onOpenChatSettings = { showChatSettings = true },
                                 onOpenChatRecords = { showChatRecords = true },
-                                onOpenMyReviews = { showMyReviews = true }
+                                onOpenMyReviews = { showMyReviews = true },
+                                onOpenDuty = { showDuty = true }
                             )
                         }
                     }
