@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.stellarelite.admin.ui.theme.AdminAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,13 +12,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         UpdateManager.setCurrentVersion(packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt())
         setContent {
-            App(
+            AdminAppTheme {
+                App(
                 appVersionName = packageManager.getPackageInfo(packageName, 0).versionName ?: "",
                 onCheckUpdate = { UpdateManager.checkForUpdate() },
-                onRequestUpdate = { info ->
-                    UpdateManager.downloadAndInstall(this, info.apkUrl)
-                }
-            )
+                    onRequestUpdate = { info ->
+                        UpdateManager.downloadAndInstall(this, info.apkUrl)
+                    }
+                )
+            }
         }
     }
 }

@@ -15,12 +15,18 @@ import com.stellarelite.admin.ui.components.AdminBottomNavBar
 import com.stellarelite.admin.ui.components.AdminTab
 import com.stellarelite.admin.ui.screens.AboutScreen
 import com.stellarelite.admin.ui.screens.AboutUsScreen
+import com.stellarelite.admin.ui.screens.ChatRecordsScreen
 import com.stellarelite.admin.ui.screens.ChatScreen
+import com.stellarelite.admin.ui.screens.ChatSettingsScreen
 import com.stellarelite.admin.ui.screens.DataRetentionPolicyScreen
+import com.stellarelite.admin.ui.screens.DarkModeScreen
+import com.stellarelite.admin.ui.screens.DisplayScreen
 import com.stellarelite.admin.ui.screens.DisclaimerScreen
 import com.stellarelite.admin.ui.screens.EulaScreen
 import com.stellarelite.admin.ui.screens.FinalComplianceScreen
 import com.stellarelite.admin.ui.screens.KycPolicyScreen
+import com.stellarelite.admin.ui.screens.MyReviewsScreen
+import com.stellarelite.admin.ui.screens.NotificationSettingsScreen
 import com.stellarelite.admin.ui.screens.PrivacyPolicyScreen
 import com.stellarelite.admin.ui.screens.RefundPolicyScreen
 import com.stellarelite.admin.ui.screens.UserServiceAgreementScreen
@@ -55,6 +61,12 @@ fun App(
     var showNewOrder by remember { mutableStateOf(false) }
     var showAboutUs by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
+    var showNotifSettings by remember { mutableStateOf(false) }
+    var showDisplay by remember { mutableStateOf(false) }
+    var showDarkMode by remember { mutableStateOf(false) }
+    var showChatSettings by remember { mutableStateOf(false) }
+    var showChatRecords by remember { mutableStateOf(false) }
+    var showMyReviews by remember { mutableStateOf(false) }
     var policyIndex by remember { mutableStateOf<Int?>(null) }
     val scope = rememberCoroutineScope()
 
@@ -144,6 +156,54 @@ fun App(
                         onBack = { showAbout = false }
                     )
                 }
+            } else if (showNotifSettings) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    NotificationSettingsScreen(onBack = { showNotifSettings = false })
+                }
+            } else if (showDisplay) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    DisplayScreen(onBack = { showDisplay = false }, onOpenDarkMode = { showDarkMode = true })
+                }
+            } else if (showDarkMode) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    DarkModeScreen(onBack = { showDarkMode = false })
+                }
+            } else if (showChatSettings) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    ChatSettingsScreen(onBack = { showChatSettings = false })
+                }
+            } else if (showChatRecords) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    ChatRecordsScreen(onBack = { showChatRecords = false })
+                }
+            } else if (showMyReviews) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    MyReviewsScreen(onBack = { showMyReviews = false })
+                }
             } else if (policyIndex != null) {
                 Column(
                     modifier = Modifier
@@ -169,7 +229,12 @@ fun App(
                                 onBellClick = { showNotifications = true },
                                 onOpenAboutUs = { showAboutUs = true },
                                 onOpenAbout = { showAbout = true },
-                                onOpenPolicy = { policyIndex = it }
+                                onOpenPolicy = { policyIndex = it },
+                                onOpenNotificationSettings = { showNotifSettings = true },
+                                onOpenDisplay = { showDisplay = true },
+                                onOpenChatSettings = { showChatSettings = true },
+                                onOpenChatRecords = { showChatRecords = true },
+                                onOpenMyReviews = { showMyReviews = true }
                             )
                         }
                     }

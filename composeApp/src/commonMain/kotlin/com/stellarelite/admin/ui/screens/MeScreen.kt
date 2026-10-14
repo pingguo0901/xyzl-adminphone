@@ -57,6 +57,11 @@ fun MeScreen(
     onOpenAboutUs: () -> Unit = {},
     onOpenAbout: () -> Unit = {},
     onOpenPolicy: (Int) -> Unit = {},
+    onOpenNotificationSettings: () -> Unit = {},
+    onOpenDisplay: () -> Unit = {},
+    onOpenChatSettings: () -> Unit = {},
+    onOpenChatRecords: () -> Unit = {},
+    onOpenMyReviews: () -> Unit = {},
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -72,6 +77,11 @@ fun MeScreen(
             "终端用户软件许可协议" -> onOpenPolicy(7)
             "关于我们" -> onOpenAboutUs()
             "关于平台" -> onOpenAbout()
+            "通知" -> onOpenNotificationSettings()
+            "界面与显示" -> onOpenDisplay()
+            "聊天" -> onOpenChatSettings()
+            "聊天记录管理" -> onOpenChatRecords()
+            "我的评价" -> onOpenMyReviews()
             else -> { }
         }
     }
