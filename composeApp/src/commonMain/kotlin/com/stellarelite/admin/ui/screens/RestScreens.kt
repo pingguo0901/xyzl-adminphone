@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.stellarelite.admin.model.ApplicantRole
 import com.stellarelite.admin.model.RestApplication
 import com.stellarelite.admin.model.RestStatus
 import com.stellarelite.admin.model.RestStore
@@ -64,18 +65,19 @@ import com.stellarelite.admin.ui.components.FormPrimaryButton
 import com.stellarelite.admin.ui.components.SegmentedTabs
 import com.stellarelite.admin.ui.theme.AdminColors
 
-private val appFilters = listOf("全部", "请假", "放假", "已通过", "待通过", "已取消")
+private val appFilters = listOf("全部", "请假", "放假", "已通过", "待通过", "已驳回", "已取消")
 
 /** 查看申请：日期范围（胶囊+原生日历）+ 合并式筛选 + 申请列表（复刻司机端） */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RestAppsScreen(onBack: () -> Unit = {}) {
+fun RestAppsScreen(onBack: () -> Unit = {}, viewerIsBoss: Boolean = true) {
     var selectedId by remember { mutableStateOf<String?>(null) }
 
     val current = RestStore.apps.firstOrNull { it.id == selectedId }
     if (current != null) {
         RestAppDetailScreen(
             app = current,
+            viewerIsBoss = viewerIsBoss,
             onBack = { selectedId = null },
             onDone = { selectedId = null },
         )
@@ -98,7 +100,8 @@ fun RestAppsScreen(onBack: () -> Unit = {}) {
         val byStatus = when (filter) {
             3 -> a.status == RestStatus.APPROVED
             4 -> a.status == RestStatus.PENDING
-            5 -> a.status == RestStatus.CANCELLED
+            5 -> a.status == RestStatus.REJECTED
+            6 -> a.status == RestStatus.CANCELLED
             else -> true
         }
         byDate && byType && byStatus
@@ -209,7 +212,7 @@ private fun RestAppRow(app: RestApplication, onClick: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RestTypeBadge(app.type)
                     Spacer(Modifier.width(8.dp))
-                    Text(app.applicant + " · 申请 " + app.appliedDate, fontSize = 12.sp, color = AdminColors.TextMuted)
+                    Text(app.role.label + " · " + app.applicant + " · 申请 " + app.appliedDate, fontSize = 12.sp, color = AdminColors.TextMuted)
                 }
                 Spacer(Modifier.height(6.dp))
                 Text(
@@ -234,13 +237,24 @@ private fun RestAppRow(app: RestApplication, onClick: () -> Unit) {
     }
 }
 
-/** 申请详情：字段明细 + 待通过可撤销 */
+/**
+ * 申请详情：
+ * - 自己的申请（内部员工自己）→ 与司机端一致：撤销申请 + 完成
+ * - 审批他人：司机申请 → 内部员工 / 老板都可 驳回 / 批准；
+ *   内部员工申请 → 只有老板可 驳回 / 批准；自己/同职位不能审批自己的申请
+ */
 @Composable
 fun RestAppDetailScreen(
     app: RestApplication,
+    viewerIsBoss: Boolean = true,
     onBack: () -> Unit = {},
     onDone: () -> Unit = {},
 ) {
+    val isSelf = app.applicant == "我"
+    val canApprove = !isSelf && when (app.role) {
+        ApplicantRole.DRIVER -> true                                     // 司机申请：内部员工 / 老板都可
+        ApplicantRole.EMPLOYEE -> viewerIsBoss                           // 内部员工申请：只有老板
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -283,7 +297,7 @@ fun RestAppDetailScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             ) {
                 Column(Modifier.padding(20.dp)) {
-                    RestDetailRow("申请人", app.applicant)
+                    RestDetailRow("申请人", app.applicant + "（" + app.role.label + "）")
                     RestDetailDivider()
                     RestDetailRow("申请日期", app.appliedDate)
                     RestDetailDivider()
@@ -304,37 +318,71 @@ fun RestAppDetailScreen(
             Spacer(Modifier.height(16.dp))
         }
 
-        if (app.status == RestStatus.PENDING) {
-            Row(Modifier.fillMaxWidth()) {
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .height(52.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .border(1.dp, AdminColors.Danger, RoundedCornerShape(16.dp))
-                        .clickable {
-                            RestStore.cancel(app.id)
-                            onDone()
-                        },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("撤销申请", color = AdminColors.Danger, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                }
-                Spacer(Modifier.width(12.dp))
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .height(52.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(AdminColors.Primary)
-                        .clickable { onDone() },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("完成", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        when {
+            canApprove && app.status == RestStatus.PENDING -> {
+                Row(Modifier.fillMaxWidth()) {
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(1.dp, AdminColors.Danger, RoundedCornerShape(16.dp))
+                            .clickable {
+                                RestStore.reject(app.id)
+                                onDone()
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("驳回申请", color = AdminColors.Danger, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(AdminColors.Primary)
+                            .clickable {
+                                RestStore.approve(app.id)
+                                onDone()
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("批准申请", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
-        } else {
-            FormPrimaryButton(text = "完成", onClick = onDone)
+            isSelf && app.status == RestStatus.PENDING -> {
+                Row(Modifier.fillMaxWidth()) {
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(1.dp, AdminColors.Danger, RoundedCornerShape(16.dp))
+                            .clickable {
+                                RestStore.cancel(app.id)
+                                onDone()
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("撤销申请", color = AdminColors.Danger, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(AdminColors.Primary)
+                            .clickable { onDone() },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("完成", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                }
+            }
+            else -> FormPrimaryButton(text = "完成", onClick = onDone)
         }
     }
 }
@@ -450,6 +498,7 @@ fun RestApplyScreen(
                             RestApplication(
                                 id = RestStore.nextId(),
                                 applicant = "我",
+                                role = ApplicantRole.EMPLOYEE,
                                 appliedDate = isoToDateDisplay(currentTimeParts().first),
                                 startDate = startDate,
                                 endDate = endDate,
@@ -559,6 +608,7 @@ private fun RestStatusBadge(status: RestStatus) {
     val c = when (status) {
         RestStatus.PENDING -> AdminColors.Warning
         RestStatus.APPROVED -> AdminColors.Success
+        RestStatus.REJECTED -> AdminColors.Danger
         RestStatus.CANCELLED -> AdminColors.TextMuted
     }
     Box(

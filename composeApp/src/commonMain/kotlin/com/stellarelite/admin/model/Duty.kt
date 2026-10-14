@@ -14,7 +14,23 @@ data class DutyRecord(
     val collectMyr: Double,    // 今日代收 MYR
 )
 
+/** 司机当月额度（跨境 / 休息，当月不累计） */
+data class DriverQuota(
+    val name: String,
+    val crossUsed: Int,
+    val crossRemaining: Int,
+    val restUsed: Int,
+    val restRemaining: Int,
+)
+
 object DutyData {
+
+    /** 每个司机的当月跨境 / 休息额度 */
+    val driverQuotas = listOf(
+        DriverQuota("张师傅", 8, 7, 3, 3),
+        DriverQuota("王师傅", 5, 10, 2, 4),
+        DriverQuota("Ahmad", 11, 4, 1, 5),
+    )
     /** 内部员工值班记录（含自己） */
     val internalRecords = listOf(
         DutyRecord("I001", "我", "14/10/2026", 120.00, 18.50, 6, 320.00, 450.00),

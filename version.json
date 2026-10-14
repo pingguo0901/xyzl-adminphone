@@ -1,7 +1,7 @@
 {
-  "versionCode": 23,
-  "versionName": "1.0.22",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.22/xyzl-adminphone.apk",
-  "changelog": "- 🏢「我的评价」改为「公司评价」\n- 📊 公司评价页：公司汇总卡（平均评分/评价数/好评率）+ 旗下司机评价卡片（司机姓名·条数·好评率·评分，点击进入该司机评价记录）+ 公司评价记录\n- 🚗 司机评价记录页：该司机汇总卡 + 该司机的评价记录列表",
+  "versionCode": 24,
+  "versionName": "1.0.23",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.23/xyzl-adminphone.apk",
+  "changelog": "- ✅ 申请详情审批按钮改造：驳回申请 / 批准申请（自己的申请与司机端一致：撤销申请 / 完成）\n- 🔐 审批权限：司机申请=内部员工或老板均可驳回/批准；内部员工申请=仅老板可审批；自己/同职位不能审批自己的申请\n- 🆕 申请状态新增「已驳回」，查看申请筛选同步新增\n- 📊 我的值班页：日期范围下方新增每位司机的当月额度卡片（跨境已用/剩余、休息已用/剩余，当月不累计）",
   "buildDate": "2026-10-15"
 }

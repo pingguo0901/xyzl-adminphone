@@ -12,13 +12,21 @@ enum class RestType(val label: String) {
 enum class RestStatus(val label: String) {
     PENDING("待通过"),
     APPROVED("已通过"),
+    REJECTED("已驳回"),
     CANCELLED("已取消"),
+}
+
+/** 申请人身份：司机 / 公司内部员工 */
+enum class ApplicantRole(val label: String) {
+    DRIVER("司机"),
+    EMPLOYEE("内部员工"),
 }
 
 /** 一条休息申请 */
 data class RestApplication(
     val id: String,
     val applicant: String,     // 申请人
+    val role: ApplicantRole,   // 申请人身份
     val appliedDate: String,   // 申请日期 dd/MM/yyyy
     val startDate: String,     // 休息日期
     val endDate: String,       // 结束日期
@@ -31,13 +39,25 @@ data class RestApplication(
 /** 休息申请数据源（本地可变，确认/撤销实时生效） */
 object RestStore {
     val apps = mutableStateListOf(
-        RestApplication("A001", "我", "12/10/2026", "15/10/2026", "16/10/2026", "家中有事，需请两天假", 2, RestType.LEAVE, RestStatus.PENDING),
-        RestApplication("A002", "陈主管", "08/10/2026", "10/10/2026", "11/10/2026", "公司统一放假", 2, RestType.HOLIDAY, RestStatus.APPROVED),
-        RestApplication("A003", "李调度", "01/10/2026", "03/10/2026", "03/10/2026", "个人原因", 1, RestType.LEAVE, RestStatus.CANCELLED),
+        RestApplication("A001", "我", ApplicantRole.EMPLOYEE, "12/10/2026", "15/10/2026", "16/10/2026", "家中有事，需请两天假", 2, RestType.LEAVE, RestStatus.PENDING),
+        RestApplication("A002", "陈主管", ApplicantRole.EMPLOYEE, "08/10/2026", "10/10/2026", "11/10/2026", "公司统一放假", 2, RestType.HOLIDAY, RestStatus.APPROVED),
+        RestApplication("A003", "李调度", ApplicantRole.EMPLOYEE, "01/10/2026", "03/10/2026", "03/10/2026", "个人原因", 1, RestType.LEAVE, RestStatus.CANCELLED),
+        RestApplication("A004", "张师傅", ApplicantRole.DRIVER, "13/10/2026", "18/10/2026", "19/10/2026", "车辆保养，需休息两天", 2, RestType.LEAVE, RestStatus.PENDING),
+        RestApplication("A005", "王师傅", ApplicantRole.DRIVER, "05/10/2026", "12/10/2026", "12/10/2026", "家中有事", 1, RestType.LEAVE, RestStatus.APPROVED),
     )
 
     fun add(app: RestApplication) {
         apps.add(0, app)
+    }
+
+    fun reject(id: String) {
+        val i = apps.indexOfFirst { it.id == id }
+        if (i >= 0) apps[i] = apps[i].copy(status = RestStatus.REJECTED)
+    }
+
+    fun approve(id: String) {
+        val i = apps.indexOfFirst { it.id == id }
+        if (i >= 0) apps[i] = apps[i].copy(status = RestStatus.APPROVED)
     }
 
     fun cancel(id: String) {

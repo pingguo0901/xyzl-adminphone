@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.stellarelite.admin.model.DriverQuota
 import com.stellarelite.admin.model.DutyData
 import com.stellarelite.admin.model.DutyRecord
 import com.stellarelite.admin.model.RestStore
@@ -181,6 +182,20 @@ fun DutyScreen(
 
             item {
                 Text(
+                    "司机当月额度（跨境 / 休息）",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = AdminColors.TextMuted,
+                    modifier = Modifier.padding(start = 6.dp, top = 6.dp),
+                )
+            }
+
+            items(DutyData.driverQuotas, key = { it.name }) { quota ->
+                DriverQuotaCard(quota)
+            }
+
+            item {
+                Text(
                     "值班记录",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -229,6 +244,41 @@ fun DutyScreen(
         ) {
             DateRangePicker(state = pickerState, modifier = Modifier.weight(1f))
         }
+    }
+}
+
+/** 单个司机当月额度卡：跨境 / 休息（当月，不累计） */
+@Composable
+private fun DriverQuotaCard(quota: DriverQuota) {
+    Card(
+        Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = AdminColors.Card),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    ) {
+        Column(Modifier.fillMaxWidth().padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(quota.name, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = AdminColors.TextPrimary)
+                Spacer(Modifier.weight(1f))
+                Text("当月", fontSize = 11.sp, color = AdminColors.TextMuted)
+            }
+            Spacer(Modifier.height(10.dp))
+            Row {
+                QuotaLine("已跨境", quota.crossUsed.toString() + " 天", "剩 " + quota.crossRemaining.toString() + " 天", AdminColors.Primary, Modifier.weight(1f))
+                QuotaLine("已休息", quota.restUsed.toString() + " 天", "剩 " + quota.restRemaining.toString() + " 天", AdminColors.Success, Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuotaLine(label: String, used: String, remain: String, accent: Color, modifier: Modifier = Modifier) {
+    Column(modifier) {
+        Text(label, fontSize = 11.sp, color = AdminColors.TextMuted)
+        Spacer(Modifier.height(2.dp))
+        Text(used, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = accent)
+        Spacer(Modifier.height(2.dp))
+        Text(remain, fontSize = 11.sp, color = AdminColors.TextMuted)
     }
 }
 
