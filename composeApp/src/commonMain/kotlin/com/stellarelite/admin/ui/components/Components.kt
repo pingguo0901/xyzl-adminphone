@@ -1,9 +1,16 @@
 package com.stellarelite.admin.ui.components
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -16,17 +23,26 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stellarelite.admin.ui.theme.AdminColors
+import kotlin.math.roundToInt
 
 // ─── 五大页面导航 ───
 
@@ -44,44 +60,84 @@ fun AdminBottomNavBar(
     currentTab: AdminTab,
     onTabSelected: (AdminTab) -> Unit
 ) {
+    val density = LocalDensity.current
+    val itemPositions = remember { mutableStateMapOf<AdminTab, IntOffset>() }
+    val itemWidths = remember { mutableStateMapOf<AdminTab, Int>() }
+
+    val targetX = itemPositions[currentTab]?.x ?: 0
+    val targetW = itemWidths[currentTab] ?: 0
+
+    val animatedX by animateDpAsState(
+        targetValue = with(density) { targetX.toDp() },
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "tabX",
+    )
+    val animatedW by animateDpAsState(
+        targetValue = with(density) { targetW.toDp() },
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "tabW",
+    )
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(AdminColors.NavBar)
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(26.dp))
-                .background(AdminColors.Card)
+                .clip(RoundedCornerShape(50))
+                .background(AdminColors.SurfaceVariant, RoundedCornerShape(50))
+                .border(1.dp, AdminColors.Border, RoundedCornerShape(50))
+                .height(52.dp)
                 .padding(4.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            tabs.forEach { tab ->
-                val isSelected = currentTab == tab
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(22.dp))
-                        .background(if (isSelected) AdminColors.PrimaryBg else Color.Transparent)
-                        .clickable { onTabSelected(tab) }
-                        .padding(horizontal = 14.dp, vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        tab.icon,
-                        contentDescription = tab.label,
-                        tint = if (isSelected) AdminColors.Primary else AdminColors.TextMuted,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        tab.label,
-                        color = if (isSelected) AdminColors.Primary else AdminColors.TextMuted,
-                        fontSize = 10.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        maxLines = 1
-                    )
+            Box(
+                modifier = Modifier
+                    .offset(x = animatedX)
+                    .width(animatedW)
+                    .fillMaxHeight()
+                    .shadow(2.dp, RoundedCornerShape(50))
+                    .background(AdminColors.Background, RoundedCornerShape(50)),
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                tabs.forEach { tab ->
+                    val isSelected = currentTab == tab
+                    val contentColor = if (isSelected) AdminColors.TextPrimary else AdminColors.TextMuted
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .onGloballyPositioned { coords ->
+                                itemPositions[tab] = IntOffset(coords.positionInParent().x.roundToInt(), 0)
+                                itemWidths[tab] = coords.size.width
+                            }
+                            .clip(RoundedCornerShape(50))
+                            .clickable { onTabSelected(tab) },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(
+                            tab.icon,
+                            contentDescription = tab.label,
+                            tint = contentColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        if (isSelected) {
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                tab.label,
+                                color = contentColor,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1
+                            )
+                        }
+                    }
                 }
             }
         }

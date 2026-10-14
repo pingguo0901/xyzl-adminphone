@@ -1,7 +1,7 @@
 {
-  "versionCode": 18,
-  "versionName": "1.0.17",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.17/xyzl-adminphone.apk",
-  "changelog": "- 🌗 深色 / 浅色 / 跟随系统模式（界面与显示 → 深色模式：跟随系统开关 + 深色/浅色手动选择），全站配色随主题切换\n- 👤 我的评价（平均评分 + 好评率 + 评价记录卡片）\n- 🗂 聊天记录管理（导出全部 / 清空全部 + 二次确认）\n- 💬 聊天设置（听筒播放 / 独立发送按钮 / 自动下载 / 保留原图原视频）\n- 🖥 界面与显示（深色浅色模式 · 字体大小档位）\n- 🔔 通知设置（未打开时 / 打开时：系统消息、语音通话、横幅、提示音、振动）\n- 🔗 我的页菜单接线：通知 / 界面与显示 / 聊天 / 聊天记录管理 / 我的评价",
+  "versionCode": 19,
+  "versionName": "1.0.18",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.18/xyzl-adminphone.apk",
+  "changelog": "- 🎨 全站配色对齐司机端：入口页（背景改用主题底色，登录按钮改蓝 #3B82F6 白字，注册按钮改浅黑底 #1A000000 + 蓝字 #3B82F6，去掉原来的深蓝+金色）\n- 🧩 胶囊分段控件复刻司机端（surfaceVariant 槽 + 1dp 边框 + 跟随滑块，选中文字 ink / 未选中 muted）\n- 📱 底部胶囊导航复刻司机端（surfaceVariant 胶囊 + 边框 + 跟随滑块，选中为 ink 图标+文字并展开，未选中仅 muted 图标）",
   "buildDate": "2026-10-14"
 }

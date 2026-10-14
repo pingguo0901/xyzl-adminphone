@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.stellarelite.admin.ui.theme.AdminColors
 import com.stellarelite.admin.R
 
 /**
@@ -36,7 +37,7 @@ fun EntryScreen(
     onLoginClick: () -> Unit = {},
     onRegisterClick: () -> Unit = {},
 ) {
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF081226))) {
+    Box(modifier = Modifier.fillMaxSize().background(AdminColors.Background)) {
         // 背景图
         Image(
             painter = painterResource(R.drawable.entry_bg),
@@ -60,7 +61,7 @@ fun EntryScreen(
                     .fillMaxWidth()
                     .height(54.dp)
                     .clip(RoundedCornerShape(999.dp))
-                    .background(Brush.horizontalGradient(listOf(Color(0xFFD8B645), Color(0xFFE6C765))))
+                    .background(Brush.horizontalGradient(listOf(Color(0xFF3B82F6), Color(0xFF3B82F6))))
                     .clickable { onLoginClick() },
                 contentAlignment = Alignment.Center,
             ) {
@@ -68,7 +69,7 @@ fun EntryScreen(
                     "登 录",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1206),
+                    color = Color(0xFFFFFFFF),
                     letterSpacing = 4.sp,
                 )
             }
@@ -81,7 +82,7 @@ fun EntryScreen(
                     .fillMaxWidth()
                     .height(54.dp)
                     .clip(RoundedCornerShape(999.dp))
-                    .background(Color(0x22FFFFFF))
+                    .background(Color(0x1A000000))
                     .clickable { onRegisterClick() },
                 contentAlignment = Alignment.Center,
             ) {
@@ -89,7 +90,7 @@ fun EntryScreen(
                     "注 册",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFE6C765),
+                    color = Color(0xFF3B82F6),
                     letterSpacing = 4.sp,
                 )
             }

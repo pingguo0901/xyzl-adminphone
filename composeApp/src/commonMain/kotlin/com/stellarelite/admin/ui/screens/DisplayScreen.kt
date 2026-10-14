@@ -29,6 +29,7 @@ import com.stellarelite.admin.ui.components.FormNote
 import com.stellarelite.admin.ui.components.FormSectionTitle
 import com.stellarelite.admin.ui.components.FormSwitchRow
 import com.stellarelite.admin.ui.components.FormValueRow
+import com.stellarelite.admin.ui.components.SegmentedTabs
 import com.stellarelite.admin.ui.components.SubPageHeader
 import com.stellarelite.admin.ui.theme.AdminColors
 import com.stellarelite.admin.ui.theme.DisplayPrefs
@@ -104,39 +105,3 @@ fun DarkModeScreen(onBack: () -> Unit = {}) {
     }
 }
 
-/** 胶囊式左右分段控件 */
-@Composable
-private fun SegmentedTabs(
-    options: List<String>,
-    selectedIndex: Int,
-    onSelect: (Int) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(44.dp)
-            .clip(RoundedCornerShape(999.dp))
-            .background(AdminColors.SurfaceVariant)
-            .padding(4.dp),
-    ) {
-        options.forEachIndexed { index, option ->
-            val selected = index == selectedIndex
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(999.dp))
-                    .background(if (selected) AdminColors.Primary else Color.Transparent)
-                    .clickable { onSelect(index) },
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    option,
-                    fontSize = 14.sp,
-                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                    color = if (selected) Color(0xFFFFFFFF) else AdminColors.TextMuted,
-                )
-            }
-        }
-    }
-}
