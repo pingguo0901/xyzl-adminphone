@@ -36,7 +36,7 @@ private val meSections: List<Pair<String, List<String>>> = listOf(
     "账号管理" to listOf("司机端密码", "登录设备管理", "更多安全设置"),
     "邀请码" to listOf("客户邀请码", "公司邀请码"),
     "支付与收款" to listOf("我的钱包"),
-    "通用" to listOf("我的值班", "通知", "界面与显示", "聊天", "聊天记录管理", "我的评价"),
+    "通用" to listOf("我的值班", "通知", "界面与显示", "聊天", "聊天记录管理", "公司评价"),
     "平台政策与协议" to listOf(
         "用户服务协议",
         "隐私政策",
@@ -83,7 +83,7 @@ fun MeScreen(
             "界面与显示" -> onOpenDisplay()
             "聊天" -> onOpenChatSettings()
             "聊天记录管理" -> onOpenChatRecords()
-            "我的评价" -> onOpenMyReviews()
+            "公司评价" -> onOpenMyReviews()
             else -> { }
         }
     }

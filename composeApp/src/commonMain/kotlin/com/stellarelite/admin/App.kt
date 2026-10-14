@@ -28,7 +28,7 @@ import com.stellarelite.admin.ui.screens.EulaScreen
 import com.stellarelite.admin.ui.screens.FinalComplianceScreen
 import com.stellarelite.admin.ui.screens.KycPolicyScreen
 import com.stellarelite.admin.ui.screens.LanguageScreen
-import com.stellarelite.admin.ui.screens.MyReviewsScreen
+import com.stellarelite.admin.ui.screens.CompanyReviewsScreen
 import com.stellarelite.admin.ui.screens.NotificationSettingsScreen
 import com.stellarelite.admin.ui.screens.PrivacyPolicyScreen
 import com.stellarelite.admin.ui.screens.RefundPolicyScreen
@@ -263,7 +263,7 @@ fun App(
                         .fillMaxSize()
                         .background(AdminColors.Background)
                 ) {
-                    MyReviewsScreen(onBack = { showMyReviews = false })
+                    CompanyReviewsScreen(onBack = { showMyReviews = false })
                 }
             } else if (policyIndex != null) {
                 Column(

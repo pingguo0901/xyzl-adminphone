@@ -1,7 +1,7 @@
 {
-  "versionCode": 22,
-  "versionName": "1.0.21",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.21/xyzl-adminphone.apk",
-  "changelog": "- 🆕 版本更新页（关于平台 → 版本更新）：当前版本 / 最新版本 / 检测版本，已是最新版\检测失败\发现新版三态弹窗，更新走真下载安装\n- 👤 我的页「通用」新增「我的值班」\n- 🗓 我的值班页复刻司机端（去掉休息额度/跨境额度卡片）：胶囊日期范围+原生日历、右上角「查看申请」、底部「申请休息」\n- 📋 值班记录分两组：老板=内部员工/司机；内部员工=我的/司机的\n- 📄 值班详情复刻司机端：值班人/日期/今日薪资/今日报销/今日单数/今日代收SGD/今日代收MYR + 右上角打印 PDF（真实导出到 下载/XYZL）\n- 📝 查看申请（日期范围+胶囊筛选+列表）、申请详情（可撤销）、申请休息（日期胶囊+原因+自动算天数）",
+  "versionCode": 23,
+  "versionName": "1.0.22",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.22/xyzl-adminphone.apk",
+  "changelog": "- 🏢「我的评价」改为「公司评价」\n- 📊 公司评价页：公司汇总卡（平均评分/评价数/好评率）+ 旗下司机评价卡片（司机姓名·条数·好评率·评分，点击进入该司机评价记录）+ 公司评价记录\n- 🚗 司机评价记录页：该司机汇总卡 + 该司机的评价记录列表",
   "buildDate": "2026-10-15"
 }
