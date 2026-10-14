@@ -58,6 +58,7 @@ import com.stellarelite.admin.model.monthStartIso
 import com.stellarelite.admin.platform.currentTimeParts
 import com.stellarelite.admin.platform.saveStatementPdf
 import com.stellarelite.admin.ui.components.SegmentedTabs
+import com.stellarelite.admin.ui.components.SubPageHeader
 import com.stellarelite.admin.ui.theme.AdminColors
 
 /**
@@ -72,13 +73,12 @@ fun DutyScreen(
     onBack: () -> Unit = {},
     isBoss: Boolean = true,
 ) {
-    var selected by remember { mutableStateOf<DutyRecord?>(null) }
+    var showRecords by remember { mutableStateOf(false) }
     var showApply by remember { mutableStateOf(false) }
     var showApps by remember { mutableStateOf(false) }
 
-    val current = selected
-    if (current != null) {
-        DutyDetailScreen(record = current, onBack = { selected = null }, onDone = { selected = null })
+    if (showRecords) {
+        DutyRecordsScreen(isBoss = isBoss, onBack = { showRecords = false })
         return
     }
     if (showApply) {
@@ -100,10 +100,6 @@ fun DutyScreen(
     var rangeStart by remember { mutableStateOf(isoToDateDisplay(monthStartIso(todayIso))) }
     var rangeEnd by remember { mutableStateOf(isoToDateDisplay(todayIso)) }
     var showPicker by remember { mutableStateOf(false) }
-    var group by remember { mutableStateOf(0) }
-
-    val groupLabels = if (isBoss) listOf("内部员工", "司机") else listOf("我的", "司机的")
-    val records = if (group == 0) DutyData.internalRecords else DutyData.driverRecords
 
     Column(
         Modifier
@@ -194,36 +190,136 @@ fun DutyScreen(
                 DriverQuotaCard(quota)
             }
 
-            item {
-                Text(
-                    "值班记录",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AdminColors.TextMuted,
-                    modifier = Modifier.padding(start = 6.dp, top = 6.dp),
-                )
-            }
-
-            item {
-                SegmentedTabs(options = groupLabels, selectedIndex = group, onSelect = { group = it })
-            }
-
-            items(records, key = { it.id }) { record ->
-                DutyRecordRow(record, onClick = { selected = record })
-            }
         }
 
         Spacer(Modifier.height(12.dp))
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(AdminColors.Primary)
-                .clickable { showApply = true },
-            contentAlignment = Alignment.Center,
+        if (isBoss) {
+            // 老板：最底部只有「值班记录」
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(AdminColors.Primary)
+                    .clickable { showRecords = true },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("值班记录", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            }
+        } else {
+            // 公司内部员工：「值班记录」+「申请休息」同一行
+            Row(Modifier.fillMaxWidth()) {
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .height(52.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(AdminColors.Primary)
+                        .clickable { showRecords = true },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text("值班记录", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                }
+                Spacer(Modifier.width(12.dp))
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .height(52.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(AdminColors.Primary)
+                        .clickable { showApply = true },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text("申请休息", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
+    }
+
+    if (showPicker) {
+        val pickerState = rememberDateRangePickerState()
+        DatePickerDialog(
+            onDismissRequest = { showPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    pickerState.selectedStartDateMillis?.let { rangeStart = millisToDateDisplay(it) }
+                    pickerState.selectedEndDateMillis?.let { rangeEnd = millisToDateDisplay(it) }
+                    showPicker = false
+                }) { Text("确定", color = AdminColors.Primary, fontWeight = FontWeight.SemiBold) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPicker = false }) { Text("取消", color = AdminColors.TextMuted) }
+            },
         ) {
-            Text("申请休息", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            DateRangePicker(state = pickerState, modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+/** 值班记录页：日期范围 + 分组（老板：内部员工/司机；内部员工：我的/司机的）+ 记录列表 */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DutyRecordsScreen(isBoss: Boolean, onBack: () -> Unit = {}) {
+    var selected by remember { mutableStateOf<DutyRecord?>(null) }
+
+    val current = selected
+    if (current != null) {
+        DutyDetailScreen(record = current, onBack = { selected = null }, onDone = { selected = null })
+        return
+    }
+
+    val todayIso = remember { currentTimeParts().first }
+    var rangeStart by remember { mutableStateOf(isoToDateDisplay(monthStartIso(todayIso))) }
+    var rangeEnd by remember { mutableStateOf(isoToDateDisplay(todayIso)) }
+    var showPicker by remember { mutableStateOf(false) }
+    var group by remember { mutableStateOf(0) }
+
+    val groupLabels = if (isBoss) listOf("内部员工", "司机") else listOf("我的", "司机的")
+    val records = if (group == 0) DutyData.internalRecords else DutyData.driverRecords
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+    ) {
+        SubPageHeader(title = "值班记录", onBack = onBack)
+        Spacer(Modifier.height(14.dp))
+
+        Row(
+            Modifier
+                .clip(RoundedCornerShape(50))
+                .background(AdminColors.SurfaceVariant)
+                .clickable { showPicker = true }
+                .padding(horizontal = 16.dp, vertical = 11.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.CalendarMonth,
+                contentDescription = null,
+                tint = AdminColors.Primary,
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                rangeStart + "  -  " + rangeEnd,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                color = AdminColors.TextPrimary,
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+        SegmentedTabs(options = groupLabels, selectedIndex = group, onSelect = { group = it })
+        Spacer(Modifier.height(14.dp))
+
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            items(records, key = { it.id }) { record ->
+                DutyRecordRow(record, onClick = { selected = record })
+            }
         }
     }
 
