@@ -115,7 +115,7 @@ fun FormNote(text: String) {
         fontSize = 12.sp,
         color = AdminColors.TextMuted,
         lineHeight = 18.sp,
-        modifier = Modifier.padding(horizontal = 6.dp),
+        modifier = Modifier.padding(start = 2.dp, bottom = 6.dp),
     )
 }
 
@@ -128,13 +128,13 @@ fun FormPrimaryButton(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(52.dp)
-            .clip(RoundedCornerShape(999.dp))
+            .height(54.dp)
+            .clip(RoundedCornerShape(50))
             .background(if (danger) AdminColors.Danger else AdminColors.Primary)
             .clickable { onClick() },
         contentAlignment = Alignment.Center,
     ) {
-        Text(text, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFFFFFF))
+        Text(text, fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFFFFFF))
     }
 }
 
@@ -142,9 +142,9 @@ fun FormPrimaryButton(
 fun FormSectionTitle(text: String) {
     Text(
         text,
-        color = AdminColors.TextSecondary,
-        fontSize = 13.sp,
+        fontSize = 17.sp,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(start = 6.dp, bottom = 8.dp),
+        color = AdminColors.TextPrimary,
+        modifier = Modifier.padding(start = 2.dp, top = 4.dp, bottom = 10.dp),
     )
 }

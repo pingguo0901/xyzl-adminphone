@@ -106,10 +106,10 @@ fun AboutUsScreen(onBack: () -> Unit = {}) {
 private fun SectionLabel(text: String) {
     Text(
         text,
-        color = AdminColors.TextSecondary,
-        fontSize = 13.sp,
+        fontSize = 17.sp,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(start = 6.dp, bottom = 8.dp),
+        color = AdminColors.TextPrimary,
+        modifier = Modifier.padding(start = 2.dp, top = 4.dp, bottom = 10.dp),
     )
 }
 

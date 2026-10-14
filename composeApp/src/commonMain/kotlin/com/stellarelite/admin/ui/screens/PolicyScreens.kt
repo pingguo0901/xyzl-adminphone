@@ -236,7 +236,7 @@ fun PolicyContentScreen(title: String, blocks: List<String>, onBack: () -> Unit 
                         else -> Text(
                             body,
                             fontSize = 14.sp,
-                            color = AdminColors.TextMuted,
+                            color = AdminColors.TextPrimary,
                             lineHeight = 22.sp,
                             modifier = Modifier.padding(bottom = 10.dp),
                         )
