@@ -18,6 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -190,17 +192,24 @@ fun FormPrimaryButton(
     text: String,
     onClick: () -> Unit,
     danger: Boolean = false,
+    enabled: Boolean = true,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(54.dp)
-            .clip(RoundedCornerShape(50))
-            .background(if (danger) AdminColors.Danger else AdminColors.Primary)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center,
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier.fillMaxWidth().height(54.dp),
+        shape = RoundedCornerShape(50),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (danger) AdminColors.Danger else AdminColors.Primary,
+            disabledContainerColor = AdminColors.SurfaceVariant,
+        ),
     ) {
-        Text(text, fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFFFFFF))
+        Text(
+            text,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = if (enabled) Color(0xFFFFFFFF) else AdminColors.TextMuted,
+        )
     }
 }
 

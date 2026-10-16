@@ -33,7 +33,7 @@ import com.stellarelite.admin.ui.theme.AdminColors
 
 private val meSections: List<Pair<String, List<String>>> = listOf(
     "我的信息" to listOf("个人信息", "隐私信息", "车辆信息"),
-    "账号管理" to listOf("司机端密码", "登录设备管理", "更多安全设置"),
+    "账号管理" to listOf("密码管理", "登录设备管理", "更多安全设置"),
     "邀请码" to listOf("客户邀请码", "公司邀请码"),
     "支付与收款" to listOf("我的钱包"),
     "通用" to listOf("我的值班", "通知", "界面与显示", "聊天", "聊天记录管理", "公司评价"),
@@ -63,6 +63,12 @@ fun MeScreen(
     onOpenChatSettings: () -> Unit = {},
     onOpenChatRecords: () -> Unit = {},
     onOpenMyReviews: () -> Unit = {},
+    onOpenPersonalInfo: () -> Unit = {},
+    onOpenPrivacyInfo: () -> Unit = {},
+    onOpenVehicleInfo: () -> Unit = {},
+    onOpenChangePassword: () -> Unit = {},
+    onOpenDeviceManage: () -> Unit = {},
+    onOpenSecurity: () -> Unit = {},
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -84,6 +90,12 @@ fun MeScreen(
             "聊天" -> onOpenChatSettings()
             "聊天记录管理" -> onOpenChatRecords()
             "公司评价" -> onOpenMyReviews()
+            "个人信息" -> onOpenPersonalInfo()
+            "隐私信息" -> onOpenPrivacyInfo()
+            "车辆信息" -> onOpenVehicleInfo()
+            "密码管理" -> onOpenChangePassword()
+            "登录设备管理" -> onOpenDeviceManage()
+            "更多安全设置" -> onOpenSecurity()
             else -> { }
         }
     }

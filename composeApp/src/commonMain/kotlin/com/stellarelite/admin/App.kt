@@ -18,7 +18,9 @@ import com.stellarelite.admin.ui.screens.AboutUsScreen
 import com.stellarelite.admin.ui.screens.ChatRecordsScreen
 import com.stellarelite.admin.ui.screens.ChatScreen
 import com.stellarelite.admin.ui.screens.ChatSettingsScreen
+import com.stellarelite.admin.ui.screens.ChangePasswordScreen
 import com.stellarelite.admin.ui.screens.DataRetentionPolicyScreen
+import com.stellarelite.admin.ui.screens.DeviceManageScreen
 import com.stellarelite.admin.ui.screens.DarkModeScreen
 import com.stellarelite.admin.ui.screens.DisplayScreen
 import com.stellarelite.admin.ui.screens.DutyScreen
@@ -30,6 +32,8 @@ import com.stellarelite.admin.ui.screens.KycPolicyScreen
 import com.stellarelite.admin.ui.screens.LanguageScreen
 import com.stellarelite.admin.ui.screens.CompanyReviewsScreen
 import com.stellarelite.admin.ui.screens.NotificationSettingsScreen
+import com.stellarelite.admin.ui.screens.PersonalInfoScreen
+import com.stellarelite.admin.ui.screens.PrivacyInfoScreen
 import com.stellarelite.admin.ui.screens.PrivacyPolicyScreen
 import com.stellarelite.admin.ui.screens.RefundPolicyScreen
 import com.stellarelite.admin.ui.screens.UserServiceAgreementScreen
@@ -40,10 +44,12 @@ import com.stellarelite.admin.ui.screens.MeScreen
 import com.stellarelite.admin.ui.screens.NewOrderScreen
 import com.stellarelite.admin.ui.screens.NotificationScreen
 import com.stellarelite.admin.ui.screens.RegisterScreen
+import com.stellarelite.admin.ui.screens.SecuritySettingsScreen
 import com.stellarelite.admin.ui.screens.LoginScreen
 import com.stellarelite.admin.ui.screens.TranslateToScreen
 import com.stellarelite.admin.ui.screens.TranslationScreen
 import com.stellarelite.admin.ui.screens.TripsScreen
+import com.stellarelite.admin.ui.screens.VehicleInfoScreen
 import com.stellarelite.admin.ui.screens.VersionUpdateScreen
 import com.stellarelite.admin.ui.theme.AdminColors
 import kotlinx.coroutines.launch
@@ -79,6 +85,12 @@ fun App(
     var showMyReviews by remember { mutableStateOf(false) }
     var showDuty by remember { mutableStateOf(false) }
     var showVersionUpdate by remember { mutableStateOf(false) }
+    var showPersonalInfo by remember { mutableStateOf(false) }
+    var showPrivacyInfo by remember { mutableStateOf(false) }
+    var showVehicleInfo by remember { mutableStateOf(false) }
+    var showChangePassword by remember { mutableStateOf(false) }
+    var showDeviceManage by remember { mutableStateOf(false) }
+    var showSecurity by remember { mutableStateOf(false) }
     var policyIndex by remember { mutableStateOf<Int?>(null) }
     val scope = rememberCoroutineScope()
 
@@ -257,6 +269,54 @@ fun App(
                         onBack = { showVersionUpdate = false }
                     )
                 }
+            } else if (showPersonalInfo) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    PersonalInfoScreen(onBack = { showPersonalInfo = false })
+                }
+            } else if (showPrivacyInfo) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    PrivacyInfoScreen(onBack = { showPrivacyInfo = false })
+                }
+            } else if (showVehicleInfo) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    VehicleInfoScreen(onBack = { showVehicleInfo = false })
+                }
+            } else if (showChangePassword) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    ChangePasswordScreen(onBack = { showChangePassword = false })
+                }
+            } else if (showDeviceManage) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    DeviceManageScreen(onBack = { showDeviceManage = false })
+                }
+            } else if (showSecurity) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AdminColors.Background)
+                ) {
+                    SecuritySettingsScreen(onBack = { showSecurity = false })
+                }
             } else if (showMyReviews) {
                 Column(
                     modifier = Modifier
@@ -296,7 +356,13 @@ fun App(
                                 onOpenChatSettings = { showChatSettings = true },
                                 onOpenChatRecords = { showChatRecords = true },
                                 onOpenMyReviews = { showMyReviews = true },
-                                onOpenDuty = { showDuty = true }
+                                onOpenDuty = { showDuty = true },
+                                onOpenPersonalInfo = { showPersonalInfo = true },
+                                onOpenPrivacyInfo = { showPrivacyInfo = true },
+                                onOpenVehicleInfo = { showVehicleInfo = true },
+                                onOpenChangePassword = { showChangePassword = true },
+                                onOpenDeviceManage = { showDeviceManage = true },
+                                onOpenSecurity = { showSecurity = true }
                             )
                         }
                     }

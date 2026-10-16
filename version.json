@@ -1,7 +1,7 @@
 {
-  "versionCode": 25,
-  "versionName": "1.0.24",
-  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.24/xyzl-adminphone.apk",
-  "changelog": "- 🗂 我的值班：最底部新增「值班记录」按钮（与「申请休息」同一行）\n- 📋 值班记录移到独立页面：日期范围 + 分组（老板=内部员工/司机；内部员工=我的/司机的）+ 记录列表 → 点进值班详情\n- 👔 老板最底部只有「值班记录」；公司内部员工才有「值班记录」+「申请休息」两个按钮",
-  "buildDate": "2026-10-15"
+  "versionCode": 26,
+  "versionName": "1.0.25",
+  "apkUrl": "https://github.com/pingguo0901/xyzl-adminphone/releases/download/v1.0.25/xyzl-adminphone.apk",
+  "changelog": "- 👤 个人信息页复刻司机端：头像（拍照/相册）+ 昵称/ID/手机号（区号）/邮箱/微信号\n- 🔒 隐私信息页复刻司机端：姓名/性别/生日/居住地 + KYC认证\n- 🚗 车辆信息页复刻司机端：我的车辆/待通过验证 + 增加车辆页\n- 📱 登录设备管理页复刻司机端：已登录/已退出 + 编辑 + 设备详情\n- 🛡 更多安全设置页复刻司机端：第三方登录绑定\n- 🔑 账号管理「司机端密码」改为「密码管理」，密码管理页复刻司机端",
+  "buildDate": "2026-10-16"
 }
