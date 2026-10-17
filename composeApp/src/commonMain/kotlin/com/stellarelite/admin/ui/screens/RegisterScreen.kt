@@ -28,15 +28,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.stellarelite.admin.data.KycDocument
+import com.stellarelite.admin.data.RegisterPayload
+import com.stellarelite.admin.data.RegisterResult
 import com.stellarelite.admin.platform.MediaSource
 import com.stellarelite.admin.platform.PickedMedia
 import com.stellarelite.admin.platform.rememberDatePickerLauncher
 import com.stellarelite.admin.platform.rememberMediaPicker
 import com.stellarelite.admin.ui.theme.AdminColors
+import kotlinx.coroutines.launch
 
 // ─── 输入过滤正则 ───
 private val reCjkEnNumPunct = Regex("[\\u4e00-\\u9fa5A-Za-z0-9\\p{P}\\p{S}]") // 中文/英文/数字/特殊标点
@@ -54,10 +60,20 @@ private val countryCodes = listOf(
     "+1", "+44", "+61", "+81", "+82", "+66"
 )
 
+/** 密码最少 8 位 */
+private const val MIN_PASSWORD_LENGTH = 8
+
 @Composable
 fun RegisterScreen(
-    onRegister: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit = {},
+    /** 真正提交：Auth 账号 → register_company RPC → 企业 KYC 证件 */
+    onRegister: suspend (RegisterPayload) -> Result<RegisterResult> = {
+        Result.success(RegisterResult("", null))
+    },
+    /** 注册成功（业务表写完之后才回调） */
+    onRegistered: () -> Unit = {},
+    /** 提交中旗子：注册期间 App 不要切页面 */
+    onSubmittingChange: (Boolean) -> Unit = {},
 ) {
     // 基础
     var inviteCode by remember { mutableStateOf("") }
@@ -100,10 +116,23 @@ fun RegisterScreen(
     var licenseFile by remember { mutableStateOf<PickedMedia?>(null) }
     var agreed by remember { mutableStateOf(false) }
 
+    // 密码（注册必须有 Auth 账号）
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+
     // 弹窗/错误
     var dateTarget by remember { mutableStateOf<String?>(null) }
     var showLicenseSource by remember { mutableStateOf(false) }
     var errorMsg by remember { mutableStateOf<String?>(null) }
+    var submitError by remember { mutableStateOf<String?>(null) }
+    var kycWarning by remember { mutableStateOf<List<String>?>(null) }
+    var submitting by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    // 万一注册页被销毁，别把「注册中」旗子一直举着（举着就再也进不了 App）
+    DisposableEffect(Unit) {
+        onDispose { onSubmittingChange(false) }
+    }
 
     val hasInviteCode = inviteCode.isNotBlank()
 
@@ -132,7 +161,7 @@ fun RegisterScreen(
                 tint = AdminColors.TextPrimary,
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { onBack() }
+                    .clickable { if (!submitting) onBack() }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text("注册账号", color = AdminColors.TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Black)
@@ -317,6 +346,31 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(20.dp))
         }
 
+        // ─── 设置密码（注册必须有 Auth 账号） ───
+        SectionTitle("设置密码")
+        TextInputField(
+            value = password,
+            onValueChange = { password = filterText(it, reEnNumPunct) },
+            placeholder = "请输入密码（至少 8 位）",
+            keyboardType = KeyboardType.Password,
+            isPassword = true
+        )
+        Spacer(modifier = Modifier.height(14.dp))
+
+        SectionTitle("确认密码")
+        TextInputField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = filterText(it, reEnNumPunct) },
+            placeholder = "请再次输入密码",
+            keyboardType = KeyboardType.Password,
+            isPassword = true
+        )
+        if (confirmPassword.isNotEmpty() && confirmPassword != password) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("两次输入的密码不一致", color = AdminColors.Danger, fontSize = 13.sp)
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+
         // ─── KYC 认证 ───
         SectionTitle("KYC 认证")
         UploadBox(
@@ -362,13 +416,24 @@ fun RegisterScreen(
         }
         Spacer(modifier = Modifier.height(24.dp))
 
+        // ─── 提交失败：红字提示 ───
+        if (submitError != null) {
+            Text(
+                "⚠️ " + submitError,
+                color = AdminColors.Danger,
+                fontSize = 13.sp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+        }
+
         // ─── 注册按钮 ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(AdminColors.Primary)
-                .clickable {
+                .background(if (submitting) AdminColors.TextDisabled else AdminColors.Primary)
+                .clickable(enabled = !submitting) {
+                    if (submitting) return@clickable
                     val missing = validate(
                         hasInviteCode = hasInviteCode,
                         nickname = nickname, companyName = companyName, regNumber = regNumber,
@@ -377,14 +442,76 @@ fun RegisterScreen(
                         holderStreet = holderStreet, holderGarden = holderGarden, holderPostcode = holderPostcode, holderState = holderState,
                         bizPhone = bizPhone, bizEmail = bizEmail, bizWebsite = bizWebsite, bizWechat = bizWechat,
                         holderPhone = holderPhone, holderEmail = holderEmail, holderWebsite = holderWebsite, holderWechat = holderWechat,
+                        password = password, confirmPassword = confirmPassword,
                         ssmFile = ssmFile, icFile = icFile, licenseFile = licenseFile, agreed = agreed
                     )
-                    if (missing == null) onRegister() else errorMsg = missing
+                    if (missing != null) {
+                        errorMsg = missing
+                        return@clickable
+                    }
+                    errorMsg = null
+                    submitError = null
+                    scope.launch {
+                        submitting = true
+                        onSubmittingChange(true)
+                        // 场景 A/B（无邀请码）：企业字段 + SSM / 持有人身份证 / 持有人驾照
+                        // 场景 C（有邀请码）：只传通用字段 + 身份证（staff_ic），企业字段与驾照不传
+                        val documents = if (hasInviteCode) {
+                            listOf(KycDocument(type = "staff_ic", uri = icFile?.uri, fileName = icFile?.fileName))
+                        } else {
+                            listOf(
+                                KycDocument(type = "ssm", uri = ssmFile?.uri, fileName = ssmFile?.fileName),
+                                KycDocument(type = "director_ic", uri = icFile?.uri, fileName = icFile?.fileName),
+                                KycDocument(type = "director_license", uri = licenseFile?.uri, fileName = licenseFile?.fileName),
+                            )
+                        }
+                        val payload = RegisterPayload(
+                            email = holderEmail.trim(),
+                            password = password,
+                            nickname = nickname,
+                            accountType = if (businessType == "融资企业") "sdn_bhd" else "enterprise",
+                            inviteCode = inviteCode.ifBlank { null },
+                            phone = holderPhoneCode + holderPhone,
+                            wechatId = holderWechat,
+                            website = holderWebsite,
+                            ownerAddrLine1 = holderStreet,
+                            ownerGarden = holderGarden,
+                            ownerPostcode = holderPostcode,
+                            ownerState = holderState,
+                            displayName = if (hasInviteCode) "" else companyName,
+                            brn = if (hasInviteCode) "" else regNumber,
+                            registrationDate = if (hasInviteCode) "" else regDate,
+                            operationStartDate = if (hasInviteCode) "" else startDate,
+                            addrLine1 = if (hasInviteCode) "" else bizStreet,
+                            garden = if (hasInviteCode) "" else bizGarden,
+                            postcode = if (hasInviteCode) "" else bizPostcode,
+                            state = if (hasInviteCode) "" else bizState,
+                            companyPhone = if (hasInviteCode) "" else bizPhoneCode + bizPhone,
+                            companyEmail = if (hasInviteCode) "" else bizEmail,
+                            companyWebsite = if (hasInviteCode) "" else bizWebsite,
+                            companyWechatId = if (hasInviteCode) "" else bizWechat,
+                            documents = documents,
+                        )
+                        val result = onRegister(payload)
+                        submitting = false
+                        onSubmittingChange(false)
+                        result
+                            .onSuccess { res ->
+                                if (res.kycFailures.isEmpty()) onRegistered()
+                                else kycWarning = res.kycFailures
+                            }
+                            .onFailure { submitError = it.message ?: "注册失败，请重试" }
+                    }
                 }
                 .padding(vertical = 15.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text("注 册", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(
+                if (submitting) "注册中…" else "注 册",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
         Spacer(modifier = Modifier.height(40.dp))
     }
@@ -419,6 +546,27 @@ fun RegisterScreen(
             confirmButton = { TextButton(onClick = { errorMsg = null }) { Text("知道了", color = AdminColors.Primary) } }
         )
     }
+
+    // ─── 注册成功但证件没全传上：先把失败原因说清楚再放行 ───
+    kycWarning?.let { failures ->
+        AlertDialog(
+            onDismissRequest = { },
+            containerColor = AdminColors.Card,
+            title = { Text("注册成功", color = AdminColors.TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold) },
+            text = {
+                Text(
+                    "以下证件没有上传成功，可以登录后在认证页补交：\n" + failures.joinToString("\n"),
+                    color = AdminColors.TextSecondary,
+                    fontSize = 14.sp
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { kycWarning = null; onRegistered() }) {
+                    Text("确定", color = AdminColors.Primary)
+                }
+            }
+        )
+    }
 }
 
 // ─── 校验逻辑 ───
@@ -429,6 +577,7 @@ private fun validate(
     holderStreet: String, holderGarden: String, holderPostcode: String, holderState: String,
     bizPhone: String, bizEmail: String, bizWebsite: String, bizWechat: String,
     holderPhone: String, holderEmail: String, holderWebsite: String, holderWechat: String,
+    password: String, confirmPassword: String,
     ssmFile: PickedMedia?, icFile: PickedMedia?, licenseFile: PickedMedia?, agreed: Boolean
 ): String? {
     val missing = mutableListOf<String>()
@@ -468,6 +617,8 @@ private fun validate(
         if (icFile == null) missing += "马来西亚身份证"
         if (licenseFile == null) missing += "马来西亚驾照"
     }
+    if (password.length < MIN_PASSWORD_LENGTH) missing += "密码（至少 " + MIN_PASSWORD_LENGTH + " 位）"
+    if (password != confirmPassword) missing += "确认密码与密码不一致"
     if (!agreed) missing += "KYC 协议勾选"
     return if (missing.isEmpty()) null else "以下为必填项：\n" + missing.joinToString("、")
 }
@@ -490,7 +641,8 @@ private fun TextInputField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    keyboardType: KeyboardType
+    keyboardType: KeyboardType,
+    isPassword: Boolean = false
 ) {
     Box(
         modifier = Modifier
@@ -508,6 +660,7 @@ private fun TextInputField(
             singleLine = true,
             textStyle = TextStyle(color = AdminColors.TextPrimary, fontSize = 15.sp),
             cursorBrush = SolidColor(AdminColors.Primary),
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
         )
     }
@@ -720,4 +873,3 @@ private fun CapsuleToggle(options: List<String>, selected: String, onSelect: (St
         }
     }
 }
-

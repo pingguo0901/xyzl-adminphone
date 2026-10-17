@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.stellarelite.admin.data.RegisterRepository
 import com.stellarelite.admin.model.VersionInfo
 import com.stellarelite.admin.ui.components.AdminBottomNavBar
 import com.stellarelite.admin.ui.components.AdminTab
@@ -92,7 +93,16 @@ fun App(
     var showDeviceManage by remember { mutableStateOf(false) }
     var showSecurity by remember { mutableStateOf(false) }
     var policyIndex by remember { mutableStateOf<Int?>(null) }
+    var registering by remember { mutableStateOf(false) }
+    var showRegisterSuccess by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val registerRepository = remember { RegisterRepository() }
+
+    // 注册期间不要把界面切走：signUp 一成功就有 session，
+    // 任何基于登录态的 gate 都会在业务表还没写完时提前翻转，把注册协程掐掉。
+    fun navigateTo(view: AppView) {
+        if (!registering) currentView = view
+    }
 
     LaunchedEffect(Unit) {
         onCheckUpdate?.let { checkFn ->
@@ -109,15 +119,15 @@ fun App(
     when (currentView) {
         AppView.Entry -> {
             EntryScreen(
-                onLoginClick = { currentView = AppView.Login },
-                onRegisterClick = { currentView = AppView.Register }
+                onLoginClick = { navigateTo(AppView.Login) },
+                onRegisterClick = { navigateTo(AppView.Register) }
             )
         }
         AppView.Login -> {
             LoginScreen(
-                onBack = { currentView = AppView.Entry },
-                onLoginSuccess = { currentView = AppView.Dashboard },
-                onRegister = { currentView = AppView.Register },
+                onBack = { navigateTo(AppView.Entry) },
+                onLoginSuccess = { navigateTo(AppView.Dashboard) },
+                onRegister = { navigateTo(AppView.Register) },
                 onForgetPassword = { /* TODO: 忘记密码流程 */ },
                 onWechatLogin = { /* TODO: 微信登录 */ },
                 onAppleLogin = { /* TODO: Apple 登录 */ },
@@ -126,8 +136,10 @@ fun App(
         }
         AppView.Register -> {
             RegisterScreen(
-                onRegister = { currentView = AppView.Login },
-                onBack = { currentView = AppView.Entry }
+                onBack = { navigateTo(AppView.Entry) },
+                onRegister = { payload -> registerRepository.registerFull(payload) },
+                onRegistered = { showRegisterSuccess = true },
+                onSubmittingChange = { registering = it }
             )
         }
         AppView.Dashboard -> {
@@ -394,6 +406,22 @@ fun App(
             title = { Text("版本更新", color = AdminColors.TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold) },
             text = { Text("已是最新版本", color = AdminColors.TextSecondary, fontSize = 14.sp) },
             confirmButton = { TextButton(onClick = { showLatestDialog = false }) { Text("完成", color = AdminColors.Primary, fontWeight = FontWeight.SemiBold) } }
+        )
+    }
+
+    // ─── 注册成功：明确告诉用户，再回登录页（不靠登录态翻转） ───
+    if (showRegisterSuccess) {
+        AlertDialog(
+            onDismissRequest = { },
+            containerColor = AdminColors.Card,
+            title = { Text("注册成功", color = AdminColors.TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold) },
+            text = { Text("账号已创建，请用注册邮箱和密码登录。", color = AdminColors.TextSecondary, fontSize = 14.sp) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showRegisterSuccess = false
+                    currentView = AppView.Login
+                }) { Text("确定", color = AdminColors.Primary, fontWeight = FontWeight.SemiBold) }
+            }
         )
     }
 }

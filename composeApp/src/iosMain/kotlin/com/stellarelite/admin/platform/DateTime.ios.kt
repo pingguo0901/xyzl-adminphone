@@ -10,6 +10,8 @@ import platform.Foundation.NSUserDomainMask
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.writeToFile
 
+actual fun nowMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
+
 actual fun currentTimeParts(): Pair<String, String> {
     val fmt = NSDateFormatter().apply { dateFormat = "yyyy-MM-dd" }
     val fmtTime = NSDateFormatter().apply { dateFormat = "HH:mm" }

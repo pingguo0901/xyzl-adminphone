@@ -12,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @Composable
@@ -58,6 +60,17 @@ actual fun rememberMediaPicker(): (MediaSource, (PickedMedia?) -> Unit) -> Unit 
                     "image/*"
                 )
             )
+        }
+    }
+}
+
+actual suspend fun readUriBytes(uri: String): ByteArray? {
+    val context = AdminAppContext.context ?: return null
+    return withContext(Dispatchers.IO) {
+        try {
+            context.contentResolver.openInputStream(Uri.parse(uri))?.use { it.readBytes() }
+        } catch (_: Exception) {
+            null
         }
     }
 }

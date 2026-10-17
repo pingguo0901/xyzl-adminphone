@@ -16,6 +16,8 @@ object AdminAppContext {
     var context: android.content.Context? = null
 }
 
+actual fun nowMillis(): Long = System.currentTimeMillis()
+
 actual fun currentTimeParts(): Pair<String, String> {
     val now = Date()
     val d = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(now)

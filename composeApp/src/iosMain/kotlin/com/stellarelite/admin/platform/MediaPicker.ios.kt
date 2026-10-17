@@ -8,3 +8,5 @@ actual fun rememberMediaPicker(): (MediaSource, (PickedMedia?) -> Unit) -> Unit 
     return remember { { _, _ -> } }
 }
 
+actual suspend fun readUriBytes(uri: String): ByteArray? = null
+
